@@ -6,48 +6,65 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  useColorScheme,
 } from 'react-native';
-import {TextWrapper} from '../../components/Wrapper/Text';
+import {TextWrapper} from '../../components/Wrappers/Text';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const {height} = Dimensions.get('window');
 
-const SplashScreen = () => {
-  const navigation = useNavigation();
-  const navigateToLoginOrSignup = () => {
-    navigation.navigate('LoginOrSignup');
+const SplashScreen = ({navigation}: {navigation: any}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.flexContainer}>
-          <Image source={require('./assets/paw.png')} />
-          <TouchableOpacity>
-            <TextWrapper style={styles.skipText} text="Skip" />
+    <SafeAreaView style={backgroundStyle}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={backgroundStyle.backgroundColor}
+      />
+      <ScrollView style={styles.container}>
+        <View style={styles.contentContainer}>
+          <View style={styles.flexContainer}>
+            <Image source={require('../../assets/paw.png')} />
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('loginOrSignup');
+              }}>
+              <TextWrapper style={styles.skipText} text="Skip" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.viewStyle}>
+            <Image
+              style={styles.imageStyle}
+              source={require('../../assets/brownDog.png')}
+            />
+            <TextWrapper
+              style={styles.headingStyle}
+              text="Welcome to Paw Mantra"
+            />
+            <TextWrapper
+              style={styles.textStyle}
+              text="Your pet’s well-being is our top priority. From grooming to
+            boarding, we offer comprehensive care for your furry friends."
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('loginOrSignup');
+            }}>
+            <View style={styles.arrowStyle}>
+              <Image source={require('../../assets/rightArrow.png')} />
+            </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.viewStyle}>
-          <Image
-            style={styles.imageStyle}
-            source={require('./assets/brownDog.png')}
-          />
-          <TextWrapper
-            style={styles.headingStyle}
-            text="Welcome to Paw Mantra"
-          />
-          <TextWrapper
-            style={styles.textStyle}
-            text="Your pet’s well-being is our top priority. From grooming to
-            boarding, we offer comprehensive care for your furry friends."
-          />
-        </View>
-        <TouchableOpacity onPress={navigateToLoginOrSignup}>
-          <View style={styles.arrowStyle}>
-            <Image source={require('./assets/rightArrow.png')} />
-          </View>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -55,6 +72,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F5C634',
     height,
+  },
+  contentContainer: {
+    marginTop: 20,
   },
   skipText: {
     fontSize: 20,
@@ -94,7 +114,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginRight: 50,
     width: 30,
-    marginTop: 90,
+    marginTop: 60,
   },
 });
 

@@ -6,34 +6,27 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  useColorScheme,
-} from 'react-native';
+
 import {NavigationContainer} from '@react-navigation/native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SplashScreen from './screens/Home/SplashScreen';
+import {Main} from './screens/LoginAndSignUp/Main';
+import {Login} from './screens/LoginAndSignUp/Login';
+import {Signup} from './screens/LoginAndSignUp/Signup';
+
+const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
     <NavigationContainer>
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <SplashScreen />
-        </ScrollView>
-      </SafeAreaView>
+      <Stack.Navigator
+        initialRouteName="splashScreen"
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen name="splashScreen" component={SplashScreen} />
+        <Stack.Screen name="loginOrSignup" component={Main} />
+        <Stack.Screen name="login" component={Login} />
+        <Stack.Screen name="signup" component={Signup} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

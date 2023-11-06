@@ -1,19 +1,66 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
+import {TextWrapper} from '../../components/Wrappers/Text';
+import {ButtonWrapper} from '../../components/Wrappers/Button';
 
-export function Main() {
+export function Main({navigation}: {navigation: any}) {
   return (
-    <View style={styles.headingStyle}>
-      <Text>Main</Text>
+    <View style={styles.containerStyle}>
+      <View>
+        <Image source={require('../../assets/paw.png')} />
+      </View>
+      <View style={styles.flexContainer}>
+        <TextWrapper text="Hello,     Pet Parent" style={styles.textStyle} />
+        <Image
+          style={styles.imageStyle}
+          source={require('../../assets/coupleWithPet.png')}
+        />
+        <ButtonWrapper
+          title="Sign in"
+          onPress={() => navigation.navigate('login')}
+          style={styles.signUpStyle}
+        />
+        <ButtonWrapper
+          title="Create an Account"
+          blackText
+          style={styles.createAccountStyle}
+          backgroundColor="#fff"
+          onPress={() => navigation.navigate('signup')}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headingStyle: {
-    flex: 1,
+  containerStyle: {
+    marginLeft: 30,
+    marginTop: 30,
+  },
+  flexContainer: {
+    marginTop: 30,
+    display: 'flex',
+  },
+  textStyle: {
     fontSize: 36,
-    fontWeight: 'bold',
-    width: 169,
+    color: '#000',
+    width: 180,
     height: 90,
+  },
+  imageStyle: {
+    marginTop: 50,
+    marginLeft: 50,
+    width: 300,
+    height: 350,
+  },
+  viewStyle: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  signUpStyle: {
+    marginTop: 50,
+  },
+  createAccountStyle: {
+    marginTop: 20,
   },
 });
