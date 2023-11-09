@@ -22,7 +22,7 @@ export function Signup({navigation}: {navigation: any}) {
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('loginOrSignup')}>
         <View style={styles.backButtonStyle}>
-          <Image source={require('../../assets/backButton.png')} />
+          <Image source={require('../../assets/utils/backButton.png')} />
         </View>
       </TouchableOpacity>
       <View>
@@ -68,7 +68,7 @@ export function Signup({navigation}: {navigation: any}) {
           value={userDetails.confirmPassword}
         />
         <ButtonWrapper
-          onPress={() => navigation.navigate('')}
+          onPress={() => navigation.navigate('mobileVerification')}
           title="Sign up"
         />
         <SocialMediaSignInOrSignUp isSignup />
@@ -76,7 +76,7 @@ export function Signup({navigation}: {navigation: any}) {
           <TextWrapper text="Already have an account?" />
           <TouchableOpacity
             style={styles.signUpText}
-            onPress={() => navigation.navigate('')}>
+            onPress={() => navigation.navigate('login')}>
             <TextWrapper text="Sign in" color="#CB93A5" />
           </TouchableOpacity>
         </View>

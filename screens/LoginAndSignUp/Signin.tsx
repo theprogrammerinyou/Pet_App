@@ -19,7 +19,7 @@ export function Login({navigation}: {navigation: any}) {
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('loginOrSignup')}>
         <View style={styles.backButtonStyle}>
-          <Image source={require('../../assets/backButton.png')} />
+          <Image source={require('../../assets/utils/backButton.png')} />
         </View>
       </TouchableOpacity>
       <View>
@@ -46,7 +46,7 @@ export function Login({navigation}: {navigation: any}) {
           <TextWrapper text="Forgot Password?" />
         </TouchableOpacity>
         <ButtonWrapper
-          onPress={() => navigation.navigate('')}
+          onPress={() => navigation.navigate('home')}
           title="Sign in"
         />
         <SocialMediaSignInOrSignUp />

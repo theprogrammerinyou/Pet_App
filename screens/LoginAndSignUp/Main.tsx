@@ -6,13 +6,13 @@ export function Main({navigation}: {navigation: any}) {
   return (
     <View style={styles.containerStyle}>
       <View>
-        <Image source={require('../../assets/paw.png')} />
+        <Image source={require('../../assets/Splash/paw.png')} />
       </View>
       <View style={styles.flexContainer}>
         <TextWrapper text="Hello,     Pet Parent" style={styles.textStyle} />
         <Image
           style={styles.imageStyle}
-          source={require('../../assets/coupleWithPet.png')}
+          source={require('../../assets/Splash/coupleWithPet.png')}
         />
         <ButtonWrapper
           title="Sign in"
@@ -21,7 +21,7 @@ export function Main({navigation}: {navigation: any}) {
         />
         <ButtonWrapper
           title="Create an Account"
-          blackText
+          color="#000"
           style={styles.createAccountStyle}
           backgroundColor="#fff"
           onPress={() => navigation.navigate('signup')}

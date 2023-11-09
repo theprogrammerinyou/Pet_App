@@ -31,7 +31,7 @@ const SplashScreen = ({navigation}: {navigation: any}) => {
       <ScrollView style={styles.container}>
         <View style={styles.contentContainer}>
           <View style={styles.flexContainer}>
-            <Image source={require('../../assets/paw.png')} />
+            <Image source={require('../../assets/Splash/paw.png')} />
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('loginOrSignup');
@@ -42,7 +42,7 @@ const SplashScreen = ({navigation}: {navigation: any}) => {
           <View style={styles.viewStyle}>
             <Image
               style={styles.imageStyle}
-              source={require('../../assets/brownDog.png')}
+              source={require('../../assets/Splash/brownDog.png')}
             />
             <TextWrapper
               style={styles.headingStyle}
@@ -59,7 +59,7 @@ const SplashScreen = ({navigation}: {navigation: any}) => {
               navigation.navigate('loginOrSignup');
             }}>
             <View style={styles.arrowStyle}>
-              <Image source={require('../../assets/rightArrow.png')} />
+              <Image source={require('../../assets/Splash/rightArrow.png')} />
             </View>
           </TouchableOpacity>
         </View>

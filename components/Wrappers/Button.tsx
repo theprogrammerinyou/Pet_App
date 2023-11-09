@@ -3,21 +3,26 @@ import {TextWrapper} from './Text';
 export function ButtonWrapper({
   onPress,
   title,
-  blackText,
   style,
+  width = 350,
+  height = 36,
+  color = '#fff',
   backgroundColor = '#CB93A5',
 }: {
   onPress: () => void;
   title: string;
   blackText?: boolean;
   style?: any;
+  height?: number;
+  width?: number;
   backgroundColor?: string;
+  color?: string;
 }) {
   return (
     <TouchableOpacity
       onPressIn={onPress}
-      style={[style, {backgroundColor}, styles.buttonStyle]}>
-      <TextWrapper text={title} color={blackText ? '#000' : '#fff'} />
+      style={[style, {backgroundColor, width, height}, styles.buttonStyle]}>
+      <TextWrapper text={title} color={color} />
     </TouchableOpacity>
   );
 }
@@ -25,8 +30,6 @@ export function ButtonWrapper({
 const styles = StyleSheet.create({
   buttonStyle: {
     borderRadius: 12,
-    width: 350,
-    height: 36,
     textAlign: 'center',
     borderColor: '#CB93A5',
     display: 'flex',

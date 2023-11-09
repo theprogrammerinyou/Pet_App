@@ -17,13 +17,13 @@ export function SocialMediaSignInOrSignUp({isSignup}: {isSignup?: boolean}) {
       <View style={styles.socialMediaFlexContainer}>
         <View style={styles.socialMediaImageContainer}>
           <Image
-            source={require('../assets/googleImage.png')}
+            source={require('../assets/SocialMedia/googleImage.png')}
             style={styles.googleImageStyle}
           />
         </View>
         <View style={styles.socialMediaImageContainer}>
           <Image
-            source={require('../assets/MicrosoftTeams-image.png')}
+            source={require('../assets/SocialMedia/facebookImage.png')}
             style={styles.facebookImageStyle}
             resizeMode="contain"
           />
@@ -36,7 +36,7 @@ export function SocialMediaSignInOrSignUp({isSignup}: {isSignup?: boolean}) {
 const styles = StyleSheet.create({
   container: {flexDirection: 'row', alignItems: 'center', marginTop: 50},
   line: {flex: 1, height: 1, backgroundColor: 'black'},
-  textStyle: {width: 100, marginLeft: 10, marginRight: 10, textAlign: 'center'},
+  textStyle: {width: 120, marginLeft: 10, marginRight: 10, textAlign: 'center'},
   columnContainer: {
     flexDirection: 'column',
   },

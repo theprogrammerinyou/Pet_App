@@ -5,17 +5,21 @@ export function InputWrapper({
   onChangeText,
   value,
   type,
+  style,
+  borderColor,
 }: {
-  placeholder: string;
+  placeholder?: string;
   onChangeText: (e: any) => void;
   value: string;
   type?: string;
+  style?: any;
+  borderColor?: string;
 }) {
   return (
     <TextInput
       onChangeText={onChangeText}
       value={value}
-      style={styles.inputStyle}
+      style={[style, {borderColor}, styles.inputStyle]}
       secureTextEntry={type === 'password'}
       placeholder={placeholder}
     />
@@ -29,6 +33,5 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderWidth: 2,
     paddingStart: 20,
-    borderColor: '#CB93A5',
   },
 });
