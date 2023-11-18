@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import {Image} from 'react-native';
+import {Image, Platform} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SplashScreen from './screens/SplashScreens/SplashScreen';
@@ -23,6 +23,7 @@ import {Doctor} from './screens/Doctor/Doctor';
 import {Profile} from './screens/Profile/Profile';
 import {Walker} from './screens/Home/Walker/Walker';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {WalkerProfile} from './components/Profile/WalkerProfile';
 
 const Tabs = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,6 +47,7 @@ function HomeTabs(): JSX.Element {
       )}
       <Stack.Screen name="homeTab" component={Home} />
       <Stack.Screen name="petWalker" component={Walker} />
+      <Stack.Screen name="walkerProfile" component={WalkerProfile} />
     </Stack.Navigator>
   );
 }
@@ -53,106 +55,104 @@ function HomeTabs(): JSX.Element {
 function App(): JSX.Element {
   const isSignedIn = true;
   return (
-    <>
-      <NavigationContainer>
-        <Tabs.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarLabel() {
-              return null;
-            },
-            tabBarHideOnKeyboard: true,
-            tabBarStyle: {
-              backgroundColor: '#F9F9F9',
-              height: 70,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              position: 'absolute',
-              elevation: 0,
-            },
-          }}>
-          {isSignedIn && (
-            <>
-              <Tabs.Screen
-                name="home"
-                component={HomeTabs}
-                options={{
-                  tabBarIcon: ({focused}) => (
-                    <Image
-                      source={
-                        focused
-                          ? require('./assets/TabBar/focussedHome.png')
-                          : require('./assets/TabBar/home.png')
-                      }
-                    />
-                  ),
-                }}
-              />
-              <Tabs.Screen
-                options={{
-                  tabBarIcon: ({focused}) => (
-                    <Image
-                      source={
-                        focused
-                          ? require('./assets/TabBar/focussedCommunity.png')
-                          : require('./assets/TabBar/community.png')
-                      }
-                    />
-                  ),
-                }}
-                name="community"
-                component={Community}
-              />
-              <Tabs.Screen
-                options={{
-                  tabBarIcon: ({focused}) => (
-                    <Image
-                      source={
-                        focused
-                          ? require('./assets/TabBar/focussedLocation.png')
-                          : require('./assets/TabBar/location.png')
-                      }
-                    />
-                  ),
-                }}
-                name="location"
-                component={Location}
-              />
-              <Tabs.Screen
-                options={{
-                  tabBarIcon: ({focused}) => (
-                    <Image
-                      source={
-                        focused
-                          ? require('./assets/TabBar/focussedDoctor.png')
-                          : require('./assets/TabBar/doctor.png')
-                      }
-                    />
-                  ),
-                }}
-                name="doctor"
-                component={Doctor}
-              />
-              <Tabs.Screen
-                options={{
-                  tabBarIcon: ({focused}) => (
-                    <Image
-                      source={
-                        focused
-                          ? require('./assets/TabBar/focussedProfile.png')
-                          : require('./assets/TabBar/profile.png')
-                      }
-                    />
-                  ),
-                }}
-                name="profile"
-                component={Profile}
-              />
-            </>
-          )}
-        </Tabs.Navigator>
-      </NavigationContainer>
-    </>
+    <NavigationContainer>
+      <Tabs.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarLabel() {
+            return null;
+          },
+          tabBarHideOnKeyboard: true,
+          tabBarStyle: {
+            backgroundColor: '#F9F9F9',
+            height: Platform.OS === 'ios' ? 100 : 70,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            position: 'absolute',
+            elevation: 0,
+          },
+        }}>
+        {isSignedIn && (
+          <>
+            <Tabs.Screen
+              name="home"
+              component={HomeTabs}
+              options={{
+                tabBarIcon: ({focused}) => (
+                  <Image
+                    source={
+                      focused
+                        ? require('./assets/TabBar/focussedHome.png')
+                        : require('./assets/TabBar/home.png')
+                    }
+                  />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              options={{
+                tabBarIcon: ({focused}) => (
+                  <Image
+                    source={
+                      focused
+                        ? require('./assets/TabBar/focussedCommunity.png')
+                        : require('./assets/TabBar/community.png')
+                    }
+                  />
+                ),
+              }}
+              name="community"
+              component={Community}
+            />
+            <Tabs.Screen
+              options={{
+                tabBarIcon: ({focused}) => (
+                  <Image
+                    source={
+                      focused
+                        ? require('./assets/TabBar/focussedLocation.png')
+                        : require('./assets/TabBar/location.png')
+                    }
+                  />
+                ),
+              }}
+              name="location"
+              component={Location}
+            />
+            <Tabs.Screen
+              options={{
+                tabBarIcon: ({focused}) => (
+                  <Image
+                    source={
+                      focused
+                        ? require('./assets/TabBar/focussedDoctor.png')
+                        : require('./assets/TabBar/doctor.png')
+                    }
+                  />
+                ),
+              }}
+              name="doctor"
+              component={Doctor}
+            />
+            <Tabs.Screen
+              options={{
+                tabBarIcon: ({focused}) => (
+                  <Image
+                    source={
+                      focused
+                        ? require('./assets/TabBar/focussedProfile.png')
+                        : require('./assets/TabBar/profile.png')
+                    }
+                  />
+                ),
+              }}
+              name="profile"
+              component={Profile}
+            />
+          </>
+        )}
+      </Tabs.Navigator>
+    </NavigationContainer>
   );
 }
 

@@ -5,7 +5,11 @@ import {IconButton} from './IconButton';
 export function Header({text}: {text: string}) {
   return (
     <View style={styles.headerFlexContainer}>
-      <IconButton imagePath={require('../assets/utils/backButton.png')} />
+      <IconButton
+        containerHeight={30}
+        containerWidth={30}
+        imagePath={require('../assets/utils/backButton.png')}
+      />
       <TextWrapper fontSize={24} text={text} />
     </View>
   );

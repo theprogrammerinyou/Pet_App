@@ -1,4 +1,4 @@
-import {ScrollView, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, Platform} from 'react-native';
 import {useState} from 'react';
 import {Search} from '../../components/Search';
 import {Header} from '../../components/Header';
@@ -14,6 +14,7 @@ export function Community() {
     <ScrollView contentContainerStyle={styles.container}>
       <Header text="Pet Community" />
       <Search
+        height={40}
         searchValue={searchValue}
         onSearchValueChange={onSearchValueChange}
       />
@@ -23,7 +24,9 @@ export function Community() {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
+    marginTop: Platform.OS === 'ios' ? 50 : 20,
+    marginLeft: 20,
+    marginRight: 20,
   },
   headerFlexContainer: {
     display: 'flex',

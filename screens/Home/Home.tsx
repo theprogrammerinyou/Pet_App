@@ -1,4 +1,4 @@
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, Platform} from 'react-native';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {IconButton} from '../../components/IconButton';
 import {useState} from 'react';
@@ -200,7 +200,9 @@ export function Home({navigation}: {navigation: any}) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
+    marginTop: Platform.OS === 'ios' ? 50 : 20,
+    marginLeft: 20,
+    marginRight: 20,
   },
   headerFlexContainer: {
     display: 'flex',
