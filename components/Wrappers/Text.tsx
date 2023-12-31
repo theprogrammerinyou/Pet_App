@@ -6,7 +6,7 @@ export function TextWrapper({
   color = '#000',
   fontSize = 16,
 }: {
-  text: string;
+  text: string | number;
   color?: string;
   style?: any;
   fontSize?: number;
