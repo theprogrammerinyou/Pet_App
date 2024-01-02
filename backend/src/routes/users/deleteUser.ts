@@ -1,11 +1,10 @@
 import {Request, Response} from 'express';
-import {deleteUser} from '../../types/user';
+import {userIdValidation} from '../../types/user';
 import {usersModel} from '../../database/db';
 
 async function deleteUserRoute(req: Request, res: Response) {
   const {userId} = req.body;
-  const deleteUserPayload = deleteUser.safeParse({userId});
-  console.log('delete uer payload', deleteUserPayload);
+  const deleteUserPayload = userIdValidation.safeParse({userId});
   if (!deleteUserPayload.success) {
     res.status(411).json({
       status: 'fail',

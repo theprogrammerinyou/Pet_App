@@ -7,10 +7,6 @@ export const addUser = zod.object({
   contactNumber: zod.number(),
 });
 
-export const updateUser = zod.object({
-  id: zod.string(),
-});
-
-export const deleteUser = zod.object({
+export const userIdValidation = zod.object({
   userId: zod.string(),
 });
