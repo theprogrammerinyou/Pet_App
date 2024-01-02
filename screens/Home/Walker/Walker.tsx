@@ -31,8 +31,9 @@ export function Walker({navigation}: {navigation: any}) {
         />
       </View>
       <View style={styles.walkerCardContainer}>
-        {Array.from({length: 10}).map(_ => (
+        {Array.from({length: 10}).map((_, index) => (
           <WalkerCard
+            key={index}
             onPress={() => navigation.navigate('walkerProfile')}
             walkerName="Nikita Dutta"
             walkerExp="4 yrs"
@@ -48,6 +49,7 @@ export function Walker({navigation}: {navigation: any}) {
 const styles = StyleSheet.create({
   container: {
     marginTop: Platform.OS === 'ios' ? 50 : 20,
+    marginBottom: Platform.OS === 'ios' ? 0 : 50,
     marginLeft: 20,
     marginRight: 20,
   },

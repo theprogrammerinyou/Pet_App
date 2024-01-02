@@ -9,7 +9,7 @@ export function ButtonWrapper({
   color = '#fff',
   backgroundColor = '#CB93A5',
 }: {
-  onPress: () => void;
+  onPress?: () => void;
   title: string;
   blackText?: boolean;
   style?: any;
