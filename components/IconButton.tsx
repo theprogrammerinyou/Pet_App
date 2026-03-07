@@ -39,7 +39,11 @@ export function IconButton({
           },
           styles.imageContainer,
         ]}>
-        <Image source={imagePath} />
+        <Image
+          source={imagePath}
+          style={{ width: Math.min(containerWidth * 0.7, containerWidth - 10), height: Math.min(containerHeight * 0.7, containerHeight - 10) }}
+          resizeMode="contain"
+        />
       </View>
     </TouchableOpacity>
   );

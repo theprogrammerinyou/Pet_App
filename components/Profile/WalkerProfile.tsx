@@ -11,6 +11,9 @@ import {TextWrapper} from '../Wrappers/Text';
 import {Rating} from '../Rating';
 import {ButtonWrapper} from '../Wrappers/Button';
 
+type Nav = { goBack: () => void };
+type WalkerParam = { name?: string; rating?: number; reviews?: number; price?: number; location?: string; about?: string; timings?: string };
+
 export function WalkerProfile({
   walkerName = 'Nikita Dutta',
   imagePath = require('../../assets/walkerProfile/young-woman-crossing-her-fingers.png'),
@@ -18,27 +21,40 @@ export function WalkerProfile({
   walkerAge = '27',
   walkerRating = '4.4',
   walkerReviews = '2100',
+  navigation,
+  route,
 }: {
-  walkerReviews: string;
-  walkerRating: string;
-  walkerAge: string;
-  walkerName: string;
-  imagePath: ImageProps;
-  walkerGender: string;
+  walkerReviews?: string;
+  walkerRating?: string;
+  walkerAge?: string;
+  walkerName?: string;
+  imagePath?: ImageProps;
+  walkerGender?: string;
+  navigation?: Nav & { navigate: (screen: string, p?: object) => void };
+  route?: { params?: { walker?: WalkerParam & { _id?: string } } };
 }) {
+  const params = route?.params?.walker;
+  const name = params?.name ?? walkerName;
+  const providerId = params?._id ?? '';
+  const rating = params?.rating ?? (parseFloat(walkerRating) || 4.4);
+  const reviews = params?.reviews ?? (parseInt(walkerReviews, 10) || 2100);
+  const price = params?.price ?? 500;
+  const location = params?.location ?? 'Patrika Nagar, Hyderabad';
+  const about = params?.about ?? 'Lorem ipsum dolor sit amet consectetur. Etiam amet nibh magna rutrum duis arcu sollicitudin a ac. Egestas lobortis aenean arcu pharetra semper read more...';
+  const timings = params?.timings ?? 'Mon - Sat      07:00 AM - 09:00 PM';
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Header text="Walker Profile" />
+      <Header text="Walker Profile" navigation={navigation} />
       {/* walker header */}
       <View style={[styles.flexContainer, styles.spaceEvenly]}>
         <Image source={imagePath} />
         <View style={styles.walkerDetailsContainer}>
-          <TextWrapper text={walkerName} />
+          <TextWrapper text={name} />
           <TextWrapper text={walkerGender} />
           <TextWrapper text={`${walkerAge} yrs`} />
-          <Rating ratingText={walkerRating} />
+          <Rating ratingText={String(rating)} />
           <TextWrapper
-            text={`(${walkerReviews} Reviews)`}
+            text={`(${reviews} Reviews)`}
             color="rgba(0,0,0,0.45)"
           />
         </View>
@@ -48,14 +64,14 @@ export function WalkerProfile({
         <Image source={require('../../assets/walkerProfile/location.png')} />
         <TextWrapper
           style={styles.locationTextStyle}
-          text="Patrika Nagar, Hyderabad"
+          text={location}
         />
       </View>
       {/* walker fees, experience, rating */}
       <View style={[styles.flexContainer, styles.spaceEvenly]}>
         <View style={styles.detailsContainer}>
           <TextWrapper text="Fee" />
-          <TextWrapper text="500/hr" />
+          <TextWrapper text={`${price}/hr`} />
         </View>
         <View style={styles.detailsContainer}>
           <TextWrapper text="Experience" />
@@ -63,7 +79,7 @@ export function WalkerProfile({
         </View>
         <View style={styles.detailsContainer}>
           <TextWrapper text="Reviews" />
-          <Rating ratingText={walkerRating} />
+          <Rating ratingText={String(rating)} />
         </View>
       </View>
       {/* walker about */}
@@ -71,7 +87,7 @@ export function WalkerProfile({
         <TextWrapper text="About" fontSize={20} />
         <TextWrapper
           color="rgba(0, 0, 0, 0.70)"
-          text="Lorem ipsum dolor sit amet consectetur. Etiam amet nibh magna rutrum duis arcu sollicitudin a ac. Egestas lobortis aenean arcu pharetra semper read more..."
+          text={about}
         />
       </View>
       {/* timings container */}
@@ -79,7 +95,7 @@ export function WalkerProfile({
         <TextWrapper text="Working Time" fontSize={20} />
         <TextWrapper
           color="rgba(0, 0, 0, 0.70)"
-          text="Mon - Sat &nbsp; &nbsp; &nbsp; 07:00 AM - 09:00 PM"
+          text={timings}
         />
       </View>
       {/* appointment container */}
@@ -118,7 +134,16 @@ export function WalkerProfile({
             <TextWrapper text="16" />
           </View>
         </ScrollView>
-        <ButtonWrapper title="Book Now" />
+        <ButtonWrapper
+          title="Book Now"
+          onPress={() => {
+            navigation?.navigate?.('BookingForm', {
+              bookingType: 'walk',
+              providerId,
+              providerName: name,
+            });
+          }}
+        />
       </View>
     </ScrollView>
   );

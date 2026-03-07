@@ -1,5 +1,6 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {TextWrapper} from '../Wrappers/Text';
+import {theme} from '../../constants/theme';
 
 export function WalkerCard({
   walkerName,
@@ -15,88 +16,67 @@ export function WalkerCard({
   onPress: () => void;
 }) {
   return (
-    <View style={styles.walkerCardContainerStyle}>
-      <TouchableOpacity onPress={onPress} style={styles.cardImgStyles}>
-        <Image source={require('../../assets/walker/girlHeart.png')} />
-      </TouchableOpacity>
-      <View style={styles.flexContainer}>
+    <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.85}>
+      <View style={styles.avatarWrap}>
         <Image
-          source={require('../../assets/walker/rating.png')}
-          style={styles.imageStyle}
-        />
-        <TextWrapper text="4.4" />
-        <Image
-          source={require('../../assets/walker/emptyHeart.png')}
-          style={styles.imageStyle}
+          source={require('../../assets/walker/girlHeart.png')}
+          style={styles.avatarImg}
+          resizeMode="contain"
         />
       </View>
-      <TouchableOpacity onPress={onPress}>
-        <View style={styles.cardContentContainer}>
-          <TextWrapper
-            text={walkerName}
-            style={styles.textStyle}
-            color="#554D41"
-          />
-          <TextWrapper
-            text={walkerExp}
-            style={styles.textStyle}
-            color="#554D41"
-          />
-          <TextWrapper
-            text={`${walkerRate}/hr`}
-            style={styles.textStyle}
-            color="#554D41"
-          />
-          <TextWrapper
-            text={walkerDistance}
-            style={styles.textStyle}
-            color="#554D41"
-          />
-        </View>
-      </TouchableOpacity>
-    </View>
+      <View style={styles.ratingRow}>
+        <Image
+          source={require('../../assets/walker/rating.png')}
+          style={styles.starIcon}
+          resizeMode="contain"
+        />
+        <TextWrapper text={walkerExp} fontSize={theme.typography.caption} color={theme.colors.text} />
+      </View>
+      <TextWrapper text={walkerName} fontSize={theme.typography.body} style={styles.name} color={theme.colors.text} />
+      <TextWrapper text={`${walkerRate}/hr`} fontSize={theme.typography.caption} color={theme.colors.primary} />
+      <TextWrapper text={walkerDistance} fontSize={theme.typography.small} color={theme.colors.textMuted} />
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  walkerCardContainerStyle: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    width: 137,
-    height: 130,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 80,
-    marginRight: 20,
-    marginLeft: 10,
+  card: {
+    width: 140,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+    marginRight: theme.spacing.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.primaryLight,
+    ...theme.shadow.card,
   },
-  cardImgStyles: {
-    width: 75,
-    height: 75,
-    position: 'absolute',
-    top: -50,
-    zIndex: 1,
+  avatarWrap: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: theme.colors.backgroundWarm,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: theme.spacing.sm,
   },
-  cardContentContainer: {
-    marginTop: 10,
-    marginLeft: -5,
+  avatarImg: {
+    width: 44,
+    height: 44,
   },
-  textStyle: {
-    marginBottom: 3,
-  },
-  flexContainer: {
-    display: 'flex',
+  ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 60,
-    marginTop: -10,
+    gap: 4,
+    marginBottom: 2,
   },
-  imageStyle: {
-    marginLeft: 5,
+  starIcon: {
+    width: 14,
+    height: 14,
+  },
+  name: {
+    marginBottom: 2,
+    fontWeight: '600',
   },
 });

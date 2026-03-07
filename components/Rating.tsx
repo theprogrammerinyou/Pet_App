@@ -4,7 +4,11 @@ import {TextWrapper} from './Wrappers/Text';
 export function Rating({ratingText = 4.4}: {ratingText: string | number}) {
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/walker/rating.png')} />
+      <Image
+        source={require('../assets/walker/rating.png')}
+        style={{ width: 16, height: 16 }}
+        resizeMode="contain"
+      />
       <TextWrapper text={ratingText} />
     </View>
   );

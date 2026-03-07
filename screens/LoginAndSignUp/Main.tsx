@@ -1,15 +1,19 @@
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {ButtonWrapper} from '../../components/Wrappers/Button';
+import {useAuth} from '../../context/AuthContext';
+import {theme} from '../../constants/theme';
 
 export function Main({navigation}: {navigation: any}) {
+  const {continueAsGuest} = useAuth();
+
   return (
     <View style={styles.containerStyle}>
       <View>
         <Image source={require('../../assets/Splash/paw.png')} />
       </View>
       <View style={styles.flexContainer}>
-        <TextWrapper text="Hello,     Pet Parent" style={styles.textStyle} />
+        <TextWrapper text="Hello, Pet Parent" style={styles.textStyle} />
         <Image
           style={styles.imageStyle}
           source={require('../../assets/Splash/coupleWithPet.png')}
@@ -26,6 +30,9 @@ export function Main({navigation}: {navigation: any}) {
           backgroundColor="#fff"
           onPress={() => navigation.navigate('signup')}
         />
+        <TouchableOpacity style={styles.guestBtn} onPress={continueAsGuest}>
+          <TextWrapper text="Continue as guest" color={theme.colors.textSecondary} fontSize={14} />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -62,5 +69,9 @@ const styles = StyleSheet.create({
   },
   createAccountStyle: {
     marginTop: 20,
+  },
+  guestBtn: {
+    marginTop: 24,
+    paddingVertical: 8,
   },
 });

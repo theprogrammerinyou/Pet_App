@@ -1,5 +1,10 @@
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, Pressable} from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import {TextWrapper} from './Text';
+import {theme} from '../../constants/theme';
+
+const { shadow } = theme;
+
 export function ButtonWrapper({
   onPress,
   title,
@@ -7,7 +12,7 @@ export function ButtonWrapper({
   width = 350,
   height = 36,
   color = '#fff',
-  backgroundColor = '#CB93A5',
+  backgroundColor = theme.colors.primary,
 }: {
   onPress?: () => void;
   title: string;
@@ -18,20 +23,29 @@ export function ButtonWrapper({
   backgroundColor?: string;
   color?: string;
 }) {
+  const scale = useSharedValue(1);
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
   return (
-    <TouchableOpacity
-      onPressIn={onPress}
-      style={[style, {backgroundColor, width, height}, styles.buttonStyle]}>
-      <TextWrapper text={title} color={color} />
-    </TouchableOpacity>
+    <Animated.View style={animatedStyle}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={() => { scale.value = withSpring(0.96, { damping: 15 }); }}
+        onPressOut={() => { scale.value = withSpring(1); }}
+        style={[style, { backgroundColor, width, height }, styles.buttonStyle, shadow.button]}>
+        <TextWrapper text={title} color={color} />
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.md,
     textAlign: 'center',
-    borderColor: '#CB93A5',
+    borderColor: theme.colors.primary,
     display: 'flex',
     borderWidth: 2,
     marginTop: 20,

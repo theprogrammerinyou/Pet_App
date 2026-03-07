@@ -19,7 +19,7 @@ export function Search({
       value={searchValue}
       style={[{width, height}, styles.inputStyle]}
       borderColor="rgba(0, 0, 0, 0.20)"
-      onChangeText={e => onSearchValueChange(e?.target?.value)}
+      onChangeText={value => onSearchValueChange(value ?? '')}
     />
   );
 }

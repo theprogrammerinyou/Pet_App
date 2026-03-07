@@ -1,4 +1,42 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Paw Mantra – Pet Care App
+
+A full-featured **React Native** pet care app (iOS & Android) with an **Express + MongoDB** backend. Built for pet parents to manage their pets, book walkers and vets, set reminders, and more.
+
+## Features
+
+- **Auth** – Sign up, sign in, JWT tokens, password hashing (bcrypt), persistent session (AsyncStorage), guest mode
+- **Home** – My Pets (from API), Services (Grooming, Walker, Boarding, Veterinary), Shop, Reminders (from API), Add Reminder
+- **Profile** – Edit Profile, My Pets, Add Pet, account menu, sign out
+- **Pet Walkers** – List from API, search, view profiles, book appointments
+- **Find a Vet** – List of veterinarians with ratings and fees
+- **Track** – Location tracking placeholder (ready for live maps)
+- **Community** – Pet community feed (UI ready)
+- **Animations** – Splash and list stagger (Reanimated), button press feedback
+- **Backend API** – Users (CRUD, login with JWT), Pets (by user), Reminders, Walkers (MongoDB + Zod + protected routes)
+
+## Running the app
+
+### Backend (for auth & data)
+
+```bash
+cd backend
+cp .env.example .env.development  # set PASSWORD and optionally JWT_SECRET
+npm install
+npm start
+# Server runs on http://localhost:3500
+```
+
+### Mobile app
+
+```bash
+npm install
+npm start    # Metro in one terminal
+npm run ios  # or npm run android (in another terminal)
+```
+
+**Note:** If the backend is not running, sign-in/sign-up will show a network error. You can use **Continue as guest** to try the app without the backend.
+
+**MongoDB `ENOTFOUND` / DNS errors:** If you see `querySrv ENOTFOUND _mongodb._tcp.cluster0....`, your network can't resolve MongoDB Atlas. The server will still start; DB routes will fail until you either fix DNS/network or use **local MongoDB**: install MongoDB, then in `backend/.env.development` set `MONGODB_URI=mongodb://localhost:27017/petapp` (and remove or leave `PASSWORD` unused).
 
 # Getting Started
 

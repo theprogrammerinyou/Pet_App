@@ -1,16 +1,20 @@
 import {StyleSheet, View} from 'react-native';
 import {TextWrapper} from './Wrappers/Text';
 import {IconButton} from './IconButton';
+import {theme} from '../constants/theme';
 
-export function Header({text}: {text: string}) {
+type Nav = { goBack: () => void };
+
+export function Header({text, navigation}: {text: string; navigation?: Nav}) {
   return (
     <View style={styles.headerFlexContainer}>
       <IconButton
-        containerHeight={30}
-        containerWidth={30}
+        containerHeight={36}
+        containerWidth={36}
         imagePath={require('../assets/utils/backButton.png')}
+        onPress={navigation?.goBack ? () => navigation.goBack() : undefined}
       />
-      <TextWrapper fontSize={24} text={text} />
+      <TextWrapper fontSize={theme.typography.title} text={text} />
     </View>
   );
 }
@@ -20,6 +24,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 70,
+    gap: 12,
   },
 });

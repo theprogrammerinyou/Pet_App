@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Dimensions,
   Image,
@@ -8,114 +8,124 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
-  useColorScheme,
 } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSequence,
+  withDelay,
+  Easing,
+} from 'react-native-reanimated';
 import {TextWrapper} from '../../components/Wrappers/Text';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {theme} from '../../constants/theme';
 
 const {height} = Dimensions.get('window');
 
-const SplashScreen = ({navigation}: {navigation: any}) => {
-  const isDarkMode = useColorScheme() === 'dark';
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+export default function SplashScreen({navigation}: {navigation: any}) {
+  const pawOpacity = useSharedValue(0);
+  const pawScale = useSharedValue(0.8);
+  const contentOpacity = useSharedValue(0);
+  const contentTranslateY = useSharedValue(20);
+  const skipOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    pawOpacity.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.cubic)});
+    pawScale.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.back(1.2))});
+    contentOpacity.value = withDelay(300, withTiming(1, {duration: 600}));
+    contentTranslateY.value = withDelay(300, withTiming(0, {duration: 500, easing: Easing.out(Easing.cubic)}));
+    skipOpacity.value = withDelay(200, withTiming(1, {duration: 400}));
+  }, []);
+
+  const pawAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: pawOpacity.value,
+    transform: [{scale: pawScale.value}],
+  }));
+
+  const contentAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+    transform: [{translateY: contentTranslateY.value}],
+  }));
+
+  const skipAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: skipOpacity.value,
+  }));
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView style={styles.container}>
-        <View style={styles.contentContainer}>
-          <View style={styles.flexContainer}>
-            <Image source={require('../../assets/Splash/paw.png')} />
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('loginOrSignup');
-              }}>
-              <TextWrapper style={styles.skipText} text="Skip" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.viewStyle}>
-            <Image
-              style={styles.imageStyle}
-              source={require('../../assets/Splash/brownDog.png')}
-            />
-            <TextWrapper
-              style={styles.headingStyle}
-              text="Welcome to Paw Mantra"
-            />
-            <TextWrapper
-              style={styles.textStyle}
-              text="Your pet’s well-being is our top priority. From grooming to
-            boarding, we offer comprehensive care for your furry friends."
-            />
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('loginOrSignup');
-            }}>
-            <View style={styles.arrowStyle}>
-              <Image source={require('../../assets/Splash/rightArrow.png')} />
-            </View>
-          </TouchableOpacity>
+    <SafeAreaView style={[styles.safe, {backgroundColor: theme.colors.primary}]}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.primary} />
+      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Animated.View style={pawAnimatedStyle}>
+            <Image source={require('../../assets/Splash/paw.png')} style={styles.pawImg} />
+          </Animated.View>
+          <AnimatedTouchable
+            style={[styles.skipBtn, skipAnimatedStyle]}
+            onPress={() => navigation.navigate('loginOrSignup')}
+            activeOpacity={0.8}>
+            <TextWrapper style={styles.skipText} text="Skip" />
+          </AnimatedTouchable>
         </View>
+        <Animated.View style={[styles.content, contentAnimatedStyle]}>
+          <Image
+            style={styles.dogImage}
+            source={require('../../assets/Splash/brownDog.png')}
+          />
+          <TextWrapper
+            style={styles.heading}
+            text="Welcome to Paw Mantra"
+          />
+          <TextWrapper
+            style={styles.subtext}
+            text="Your pet's well-being is our top priority. From grooming to boarding, we offer comprehensive care for your furry friends."
+            color="rgba(0,0,0,0.85)"
+          />
+        </Animated.View>
+        <TouchableOpacity
+          style={styles.arrowBtn}
+          onPress={() => navigation.navigate('loginOrSignup')}
+          activeOpacity={0.8}>
+          <Image source={require('../../assets/Splash/rightArrow.png')} />
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#F5C634',
-    height,
-  },
-  contentContainer: {
-    marginTop: 20,
-  },
-  skipText: {
-    fontSize: 20,
-    fontWeight: '400',
-  },
-  viewStyle: {
-    marginTop: 50,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  flexContainer: {
-    display: 'flex',
+  safe: { flex: 1 },
+  container: { flex: 1 },
+  scrollContent: { minHeight: height, paddingBottom: 40 },
+  header: {
     flexDirection: 'row',
     margin: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headingStyle: {fontSize: 20, fontWeight: 'bold', marginTop: 50},
-  imageStyle: {
-    marginLeft: 30,
-    width: 300,
-    height: 300,
-  },
-  textStyle: {
-    fontSize: 16,
-    textAlign: 'center',
-    width: 320,
-    marginTop: 20,
-  },
-  arrowStyle: {
-    alignSelf: 'flex-end',
+  pawImg: { width: 48, height: 48 },
+  skipBtn: { padding: 8 },
+  skipText: { fontSize: 18, fontWeight: '600' },
+  content: {
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 20,
-    marginRight: 50,
-    width: 30,
-    marginTop: 60,
+    marginTop: 40,
+    paddingHorizontal: 24,
+  },
+  dogImage: { width: 280, height: 280, marginBottom: 16 },
+  heading: { fontSize: 22, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
+  subtext: {
+    fontSize: 15,
+    textAlign: 'center',
+    lineHeight: 22,
+    maxWidth: 320,
+  },
+  arrowBtn: {
+    alignSelf: 'flex-end',
+    backgroundColor: theme.colors.surface,
+    borderRadius: 12,
+    padding: 14,
+    marginRight: 24,
+    marginTop: 32,
   },
 });
-
-export default SplashScreen;

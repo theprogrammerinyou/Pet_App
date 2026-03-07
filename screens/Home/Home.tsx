@@ -1,208 +1,255 @@
 import {View, StyleSheet, ScrollView, Platform} from 'react-native';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {IconButton} from '../../components/IconButton';
-import {useState} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import {ButtonWrapper} from '../../components/Wrappers/Button';
 import {Search} from '../../components/Search';
+import {StaggerContainer} from '../../components/AnimatedView';
+import {theme} from '../../constants/theme';
+import {useAuth} from '../../context/AuthContext';
+import {apiRequest} from '../../services/api';
 
-const myPets = [
-  {
-    icon: {uri: require('../../assets/Home/dog.png')},
-  },
-  {
-    icon: {uri: require('../../assets/Home/cat.png')},
-  },
-  {
-    icon: {uri: require('../../assets/Home/addIcon.png')},
-  },
-];
+type Pet = { _id: string; name: string; category?: string };
+type Reminder = { _id: string; title: string; time?: string };
 
 const petsServices = [
-  {
-    name: 'Pet Grooming',
-    id: 1,
-    screenName: 'petGrooming',
-    icon: {uri: require('../../assets/Home/petGrooming.png')},
-  },
-  {
-    name: 'Pet Walker',
-    id: 2,
-    screenName: 'petWalker',
-    icon: {uri: require('../../assets/Home/petWalking.png')},
-  },
-  {
-    name: 'Pet Boarding',
-    id: 3,
-    screenName: 'petBoarding',
-    icon: {uri: require('../../assets/Home/petBoarding.png')},
-  },
-  {
-    name: 'Veterinary',
-    id: 4,
-    screenName: 'veterinary',
-    icon: {uri: require('../../assets/Home/veterinary.png')},
-  },
+  { name: 'Pet Grooming', id: 1, screenName: 'petGrooming', icon: require('../../assets/Home/petGrooming.png') },
+  { name: 'Pet Walker', id: 2, screenName: 'petWalker', icon: require('../../assets/Home/petWalking.png') },
+  { name: 'Pet Boarding', id: 3, screenName: 'petBoarding', icon: require('../../assets/Home/petBoarding.png') },
+  { name: 'Veterinary', id: 4, screenName: 'veterinary', icon: require('../../assets/Home/veterinary.png') },
 ];
 
 const petsShop = [
-  {
-    name: 'Food',
-    icon: {uri: require('../../assets/Home/food.png')},
-  },
-  {
-    name: 'Accessories',
-    icon: {uri: require('../../assets/Home/accessories.png')},
-  },
-];
-
-const reminders = [
-  {
-    name: 'Reminder 1',
-    id: 1,
-  },
-  {
-    name: 'Reminder 2',
-    id: 2,
-  },
-  {
-    name: 'Reminder 3',
-    id: 3,
-  },
-  {
-    name: 'Reminder 4',
-    id: 4,
-  },
-  {
-    name: 'Reminder 5',
-    id: 5,
-  },
-  {
-    name: 'Reminder 6',
-    id: 6,
-  },
-  {
-    name: 'Reminder 7',
-    id: 7,
-  },
+  { name: 'Food', icon: require('../../assets/Home/food.png') },
+  { name: 'Accessories', icon: require('../../assets/Home/accessories.png') },
 ];
 
 export function Home({navigation}: {navigation: any}) {
+  const {user, getAuthHeaders} = useAuth();
   const [searchValue, setSearchValue] = useState('');
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [petsLoading, setPetsLoading] = useState(false);
+  const [remindersLoading, setRemindersLoading] = useState(false);
 
-  const onSearchValueChange = (value: string) => {
-    setSearchValue(value);
+  const fetchPets = useCallback(async () => {
+    if (!user?._id || user._id === 'guest') {
+      setPets([]);
+      return;
+    }
+    setPetsLoading(true);
+    try {
+      const data = await apiRequest('/getPetsByUser', {
+        method: 'POST',
+        body: JSON.stringify({ userId: user._id }),
+        getAuthHeaders: getAuthHeaders,
+      });
+      if (data.status === 'success' && Array.isArray(data.pets)) {
+        setPets(data.pets);
+      }
+    } catch {
+      setPets([]);
+    } finally {
+      setPetsLoading(false);
+    }
+  }, [user?._id, getAuthHeaders]);
+
+  const fetchReminders = useCallback(async () => {
+    if (!user?._id || user._id === 'guest') {
+      setReminders([]);
+      return;
+    }
+    setRemindersLoading(true);
+    try {
+      const data = await apiRequest('/getReminders', {
+        method: 'POST',
+        body: JSON.stringify({ userId: user._id }),
+        getAuthHeaders: getAuthHeaders,
+      });
+      if (data.status === 'success' && Array.isArray(data.reminders)) {
+        setReminders(data.reminders);
+      }
+    } catch {
+      setReminders([]);
+    } finally {
+      setRemindersLoading(false);
+    }
+  }, [user?._id, getAuthHeaders]);
+
+  useEffect(() => {
+    fetchPets();
+  }, [fetchPets]);
+
+  useEffect(() => {
+    fetchReminders();
+  }, [fetchReminders]);
+
+  useEffect(() => {
+    const unsub = navigation.addListener?.('focus', () => {
+      fetchReminders();
+      fetchPets();
+    });
+    return () => { unsub?.(); };
+  }, [navigation, fetchReminders, fetchPets]);
+
+  const goToAddPet = () => {
+    (navigation.getParent?.() as any)?.navigate?.('profile', { screen: 'AddPet' });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.headerFlexContainer}>
-        <IconButton imagePath={require('../../assets/Home/hamburger.png')} />
-        <TextWrapper fontSize={24} text="Pet Care" />
-        <IconButton imagePath={require('../../assets/Home/notification.png')} />
-      </View>
-      <View style={styles.searchAndFilterContainer}>
-        <Search
-          searchValue={searchValue}
-          width={280}
-          height={45}
-          onSearchValueChange={onSearchValueChange}
-        />
-        <IconButton
-          borderColor="rgba(0, 0, 0, 0.20)"
-          imagePath={require('../../assets/utils/filterIcon.png')}
-          borderRadius={12}
-          marginTop={18}
-        />
-      </View>
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <StaggerContainer index={0}>
+        <View style={styles.headerFlexContainer}>
+          <IconButton
+            imagePath={require('../../assets/Home/hamburger.png')}
+            containerWidth={40}
+            containerHeight={40}
+          />
+          <TextWrapper fontSize={18} text="Pet Care" />
+          <IconButton
+            imagePath={require('../../assets/Home/notification.png')}
+            containerWidth={40}
+            containerHeight={40}
+          />
+        </View>
+      </StaggerContainer>
+      <StaggerContainer index={1}>
+        <View style={styles.searchAndFilterContainer}>
+          <Search
+            searchValue={searchValue}
+            width={260}
+            height={40}
+            onSearchValueChange={setSearchValue}
+          />
+          <IconButton
+            borderColor={theme.colors.border}
+            imagePath={require('../../assets/utils/filterIcon.png')}
+            containerWidth={40}
+            containerHeight={40}
+            borderRadius={10}
+            marginTop={0}
+          />
+        </View>
+      </StaggerContainer>
+      <StaggerContainer index={2}>
       <View style={styles.marginContainer}>
-        <TextWrapper fontSize={24} text="My Pets" />
+        <TextWrapper fontSize={16} text="My Pets" style={styles.sectionTitle} />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.petsContainer}>
-          {myPets.map(({icon}, index) => (
+          {pets.slice(0, 3).map((pet) => (
             <IconButton
-              key={index}
-              imagePath={icon.uri}
-              containerWidth={80}
-              containerHeight={80}
-              backgroundColor="#CB93A5"
+              key={pet._id}
+              imagePath={require('../../assets/Home/dog.png')}
+              containerWidth={52}
+              containerHeight={52}
+              backgroundColor={theme.colors.primary}
             />
           ))}
+          <IconButton
+            imagePath={require('../../assets/Home/addIcon.png')}
+            containerWidth={52}
+            containerHeight={52}
+            backgroundColor={theme.colors.primary}
+            onPress={goToAddPet}
+          />
         </ScrollView>
       </View>
+      </StaggerContainer>
+      <StaggerContainer index={3}>
       <View style={styles.marginContainer}>
-        <TextWrapper fontSize={24} text="Services" />
+        <TextWrapper fontSize={16} text="Services" style={styles.sectionTitle} />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.servicesContainer}>
           {petsServices.map(({name, screenName, icon}, index) => (
-            <View key={index}>
+            <View key={index} style={styles.serviceItem}>
               <IconButton
-                imagePath={icon.uri}
-                containerWidth={80}
-                containerHeight={80}
+                imagePath={icon}
+                containerWidth={52}
+                containerHeight={52}
                 borderRadius={12}
                 onPress={() => navigation.navigate(screenName)}
-                borderColor="#CB93A5"
+                borderColor={theme.colors.primary}
               />
-              <TextWrapper text={name} />
+              <TextWrapper text={name} fontSize={12} color={theme.colors.textSecondary} />
             </View>
           ))}
         </ScrollView>
       </View>
+      </StaggerContainer>
+      <StaggerContainer index={4}>
       <View style={styles.marginContainer}>
-        <TextWrapper fontSize={24} text="Shop" />
+        <TextWrapper fontSize={16} text="Shop" style={styles.sectionTitle} />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.petsContainer}>
-          {petsShop.map(({icon}, index) => (
+          {petsShop.map(({name, icon}, index) => (
             <IconButton
               key={index}
-              imagePath={icon.uri}
-              containerWidth={80}
-              containerHeight={80}
-              backgroundColor="#CB93A5"
+              imagePath={icon}
+              containerWidth={52}
+              containerHeight={52}
+              backgroundColor={theme.colors.primary}
             />
           ))}
         </ScrollView>
       </View>
+      </StaggerContainer>
+      <StaggerContainer index={5}>
       <View style={styles.marginContainer}>
         <View style={styles.addRemainderStyle}>
           <TextWrapper
             style={styles.remainderTextStyle}
-            fontSize={24}
+            fontSize={16}
             text="Reminders"
           />
           <ButtonWrapper
-            onPress={() => {}}
-            width={153}
-            height={50}
-            title="Add Remainder"
-            backgroundColor="#fff"
-            color="#CB93A5"
+            onPress={() => navigation.navigate('AddReminder')}
+            width={130}
+            height={40}
+            title="Add Reminder"
+            backgroundColor={theme.colors.surface}
+            color={theme.colors.primary}
           />
         </View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.remaindersContainer}>
-          {reminders.map(rem => (
-            <TextWrapper style={styles.remStyle} key={rem.id} text={rem.name} />
-          ))}
+          {reminders.length === 0 && !remindersLoading ? (
+            <TextWrapper style={styles.remStyle} text="No reminders yet" color={theme.colors.textMuted} />
+          ) : (
+            reminders.map((rem) => (
+              <TextWrapper style={styles.remStyle} key={rem._id} text={rem.title} />
+            ))
+          )}
         </ScrollView>
       </View>
+      </StaggerContainer>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flexGrow: 1,
     marginTop: Platform.OS === 'ios' ? 50 : 20,
     marginLeft: 20,
     marginRight: 20,
+    paddingBottom: 120,
+    backgroundColor: theme.colors.backgroundWarm,
+  },
+  sectionTitle: {
+    marginBottom: 4,
+    fontWeight: '600',
+  },
+  serviceItem: {
+    alignItems: 'center',
+    gap: 4,
   },
   headerFlexContainer: {
     display: 'flex',
@@ -218,22 +265,27 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   marginContainer: {
-    marginTop: 20,
+    marginTop: 14,
     marginLeft: 10,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
+    marginRight: 10,
+    ...theme.shadow.card,
   },
   petsContainer: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 20,
-    marginTop: 20,
+    gap: 14,
+    marginTop: 12,
   },
   servicesContainer: {
-    marginTop: 20,
-    gap: 20,
+    marginTop: 10,
+    gap: 14,
   },
   remaindersContainer: {
     flexDirection: 'column',
-    marginBottom: 100,
+    marginBottom: 8,
   },
   addRemainderStyle: {
     display: 'flex',
@@ -245,6 +297,6 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   remainderTextStyle: {
-    marginTop: 20,
+    marginTop: 8,
   },
 });
