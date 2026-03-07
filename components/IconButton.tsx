@@ -1,10 +1,9 @@
-import {
-  Image,
-  View,
-  StyleSheet,
-  ImageProps,
-  TouchableOpacity,
-} from 'react-native';
+import {Image, StyleSheet, ImageProps, Pressable} from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
 
 export function IconButton({
   imagePath,
@@ -25,9 +24,34 @@ export function IconButton({
   borderColor?: string;
   onPress?: () => void;
 }) {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: scale.value}],
+    };
+  });
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.92, {
+      damping: 10,
+      stiffness: 400,
+    });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, {
+      damping: 10,
+      stiffness: 400,
+    });
+  };
+
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View
+    <Pressable
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}>
+      <Animated.View
         style={[
           {
             backgroundColor,
@@ -38,14 +62,18 @@ export function IconButton({
             marginTop,
           },
           styles.imageContainer,
+          animatedStyle,
         ]}>
         <Image
           source={imagePath}
-          style={{ width: Math.min(containerWidth * 0.7, containerWidth - 10), height: Math.min(containerHeight * 0.7, containerHeight - 10) }}
+          style={{
+            width: Math.min(containerWidth * 0.7, containerWidth - 10),
+            height: Math.min(containerHeight * 0.7, containerHeight - 10),
+          }}
           resizeMode="contain"
         />
-      </View>
-    </TouchableOpacity>
+      </Animated.View>
+    </Pressable>
   );
 }
 
