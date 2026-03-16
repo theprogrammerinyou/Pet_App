@@ -14,7 +14,7 @@ const mongoDBURI =
 
 function connectMongo() {
   mongoose
-    .connect(mongoDBURI, { serverSelectionTimeoutMS: 10000 })
+    .connect(mongoDBURI, {serverSelectionTimeoutMS: 10000})
     .then(() => console.log('MongoDB connected'))
     .catch((err: Error) => {
       console.error(

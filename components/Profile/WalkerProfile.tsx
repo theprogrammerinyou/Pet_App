@@ -1,18 +1,20 @@
-import {
-  StyleSheet,
-  View,
-  Platform,
-  Image,
-  ImageProps,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, Image, ImageProps, ScrollView} from 'react-native';
 import {Header} from '../Header';
 import {TextWrapper} from '../Wrappers/Text';
 import {Rating} from '../Rating';
 import {ButtonWrapper} from '../Wrappers/Button';
+import {theme} from '../../constants/theme';
 
-type Nav = { goBack: () => void };
-type WalkerParam = { name?: string; rating?: number; reviews?: number; price?: number; location?: string; about?: string; timings?: string };
+type Nav = {goBack: () => void};
+type WalkerParam = {
+  name?: string;
+  rating?: number;
+  reviews?: number;
+  price?: number;
+  location?: string;
+  about?: string;
+  timings?: string;
+};
 
 export function WalkerProfile({
   walkerName = 'Nikita Dutta',
@@ -30,8 +32,8 @@ export function WalkerProfile({
   walkerName?: string;
   imagePath?: ImageProps;
   walkerGender?: string;
-  navigation?: Nav & { navigate: (screen: string, p?: object) => void };
-  route?: { params?: { walker?: WalkerParam & { _id?: string } } };
+  navigation?: Nav & {navigate: (screen: string, p?: object) => void};
+  route?: {params?: {walker?: WalkerParam & {_id?: string}}};
 }) {
   const params = route?.params?.walker;
   const name = params?.name ?? walkerName;
@@ -40,7 +42,9 @@ export function WalkerProfile({
   const reviews = params?.reviews ?? (parseInt(walkerReviews, 10) || 2100);
   const price = params?.price ?? 500;
   const location = params?.location ?? 'Patrika Nagar, Hyderabad';
-  const about = params?.about ?? 'Lorem ipsum dolor sit amet consectetur. Etiam amet nibh magna rutrum duis arcu sollicitudin a ac. Egestas lobortis aenean arcu pharetra semper read more...';
+  const about =
+    params?.about ??
+    'Lorem ipsum dolor sit amet consectetur. Etiam amet nibh magna rutrum duis arcu sollicitudin a ac. Egestas lobortis aenean arcu pharetra semper read more...';
   const timings = params?.timings ?? 'Mon - Sat      07:00 AM - 09:00 PM';
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -53,19 +57,13 @@ export function WalkerProfile({
           <TextWrapper text={walkerGender} />
           <TextWrapper text={`${walkerAge} yrs`} />
           <Rating ratingText={String(rating)} />
-          <TextWrapper
-            text={`(${reviews} Reviews)`}
-            color="rgba(0,0,0,0.45)"
-          />
+          <TextWrapper text={`(${reviews} Reviews)`} color="rgba(0,0,0,0.45)" />
         </View>
       </View>
       {/* walker details */}
       <View style={[styles.flexContainer, styles.w150]}>
         <Image source={require('../../assets/walkerProfile/location.png')} />
-        <TextWrapper
-          style={styles.locationTextStyle}
-          text={location}
-        />
+        <TextWrapper style={styles.locationTextStyle} text={location} />
       </View>
       {/* walker fees, experience, rating */}
       <View style={[styles.flexContainer, styles.spaceEvenly]}>
@@ -85,18 +83,12 @@ export function WalkerProfile({
       {/* walker about */}
       <View style={styles.aboutContainer}>
         <TextWrapper text="About" fontSize={20} />
-        <TextWrapper
-          color="rgba(0, 0, 0, 0.70)"
-          text={about}
-        />
+        <TextWrapper color="rgba(0, 0, 0, 0.70)" text={about} />
       </View>
       {/* timings container */}
       <View style={styles.aboutContainer}>
         <TextWrapper text="Working Time" fontSize={20} />
-        <TextWrapper
-          color="rgba(0, 0, 0, 0.70)"
-          text={timings}
-        />
+        <TextWrapper color="rgba(0, 0, 0, 0.70)" text={timings} />
       </View>
       {/* appointment container */}
       <View style={styles.aboutContainer}>
@@ -151,9 +143,8 @@ export function WalkerProfile({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: Platform.OS === 'ios' ? 50 : 20,
-    marginLeft: 20,
-    marginRight: 20,
+    paddingTop: theme.spacing.sm,
+    marginHorizontal: 20,
   },
   walkerDetailsContainer: {
     gap: 10,

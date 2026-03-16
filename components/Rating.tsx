@@ -6,7 +6,7 @@ export function Rating({ratingText = 4.4}: {ratingText: string | number}) {
     <View style={styles.container}>
       <Image
         source={require('../assets/walker/rating.png')}
-        style={{ width: 16, height: 16 }}
+        style={styles.icon}
         resizeMode="contain"
       />
       <TextWrapper text={ratingText} />
@@ -20,5 +20,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 5,
     alignItems: 'center',
+  },
+  icon: {
+    width: 16,
+    height: 16,
   },
 });

@@ -4,6 +4,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
+import {theme} from '../constants/theme';
 
 export function IconButton({
   imagePath,
@@ -12,7 +13,7 @@ export function IconButton({
   containerHeight = 48,
   borderRadius = 50,
   marginTop = 0,
-  borderColor = '#CB93A5',
+  borderColor = theme.colors.border,
   onPress,
 }: {
   imagePath: ImageProps;
@@ -25,6 +26,7 @@ export function IconButton({
   onPress?: () => void;
 }) {
   const scale = useSharedValue(1);
+  const iconSize = Math.min(containerWidth * 0.7, containerWidth - 10);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -33,16 +35,18 @@ export function IconButton({
   });
 
   const handlePressIn = () => {
-    scale.value = withSpring(0.92, {
-      damping: 10,
-      stiffness: 400,
+    scale.value = withSpring(0.94, {
+      damping: 16,
+      mass: 0.7,
+      stiffness: 280,
     });
   };
 
   const handlePressOut = () => {
     scale.value = withSpring(1, {
-      damping: 10,
-      stiffness: 400,
+      damping: 14,
+      mass: 0.6,
+      stiffness: 280,
     });
   };
 
@@ -50,7 +54,9 @@ export function IconButton({
     <Pressable
       onPress={onPress}
       onPressIn={handlePressIn}
-      onPressOut={handlePressOut}>
+      onPressOut={handlePressOut}
+      hitSlop={8}
+      android_ripple={{color: 'rgba(15,23,42,0.08)', borderless: true}}>
       <Animated.View
         style={[
           {
@@ -66,10 +72,7 @@ export function IconButton({
         ]}>
         <Image
           source={imagePath}
-          style={{
-            width: Math.min(containerWidth * 0.7, containerWidth - 10),
-            height: Math.min(containerHeight * 0.7, containerHeight - 10),
-          }}
+          style={[styles.icon, {width: iconSize, height: iconSize}]}
           resizeMode="contain"
         />
       </Animated.View>
@@ -82,6 +85,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
+  },
+  icon: {
+    opacity: 0.98,
   },
 });

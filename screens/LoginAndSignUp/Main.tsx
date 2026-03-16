@@ -31,7 +31,11 @@ export function Main({navigation}: {navigation: any}) {
           onPress={() => navigation.navigate('signup')}
         />
         <TouchableOpacity style={styles.guestBtn} onPress={continueAsGuest}>
-          <TextWrapper text="Continue as guest" color={theme.colors.textSecondary} fontSize={14} />
+          <TextWrapper
+            text="Continue as guest"
+            color={theme.colors.textSecondary}
+            fontSize={14}
+          />
         </TouchableOpacity>
       </View>
     </View>

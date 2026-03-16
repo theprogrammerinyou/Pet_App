@@ -1,6 +1,12 @@
-import React, {createContext, useCallback, useContext, useEffect, useState} from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_BASE_URL} from '../config/api';
+import {apiRequest} from '../services/api';
 
 const AUTH_STORAGE_KEY = '@petapp_user';
 const TOKEN_STORAGE_KEY = '@petapp_token';
@@ -17,7 +23,10 @@ type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   isSignedIn: boolean;
-  login: (email: string, password: string) => Promise<{success: boolean; error?: string}>;
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<{success: boolean; error?: string}>;
   signup: (data: {
     fullName: string;
     emailId: string;
@@ -43,7 +52,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(u));
     } else {
       await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
-        }
+    }
     if (t !== undefined) {
       if (t) {
         await AsyncStorage.setItem(TOKEN_STORAGE_KEY, t);
@@ -57,30 +66,26 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   }, []);
 
   const refreshUser = useCallback(async () => {
-    if (!user?._id) return;
+    if (!user?._id) {
+      return;
+    }
     try {
-      const res = await fetch(`${API_BASE_URL}/getUser`, {
+      const data = await apiRequest('/getUser', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({userId: user._id}),
       });
-      const data = await res.json();
       if (data.status === 'success' && data.users?.[0]) {
         const u = data.users[0];
-        setUser({
+        const refreshed: User = {
           _id: u._id,
           fullName: u.fullName,
           emailId: u.emailId,
-          contactNumber: u.contactNumber,
-          userImg: u.userImg,
-        });
-        await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
-          _id: u._id,
-          fullName: u.fullName,
-          emailId: u.emailId,
-          contactNumber: u.contactNumber,
-          userImg: u.userImg,
-        }));
+          contactNumber: (u as Partial<User>).contactNumber,
+          userImg: (u as Partial<User>).userImg,
+        };
+        setUser(refreshed);
+        await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(refreshed));
       }
     } catch {
       // ignore
@@ -88,8 +93,10 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   }, [user?._id]);
 
   const getAuthHeaders = useCallback(() => {
-    if (token) return { Authorization: `Bearer ${token}` };
-    return {};
+    if (token) {
+      return {Authorization: `Bearer ${token}`};
+    }
+    return {} as Record<string, string>;
   }, [token]);
 
   useEffect(() => {
@@ -103,7 +110,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           const parsed = JSON.parse(storedUser) as User;
           setUser(parsed);
         }
-        if (storedToken) setToken(storedToken);
+        if (storedToken) {
+          setToken(storedToken);
+        }
       } catch {
         setUser(null);
         setToken(null);
@@ -114,14 +123,16 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   }, []);
 
   const login = useCallback(
-    async (email: string, password: string): Promise<{success: boolean; error?: string}> => {
+    async (
+      email: string,
+      password: string,
+    ): Promise<{success: boolean; error?: string}> => {
       try {
-        const res = await fetch(`${API_BASE_URL}/login`, {
+        const data = await apiRequest('/login', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({emailId: email, password}),
         });
-        const data = await res.json();
         if (data.status === 'success' && data.user) {
           const u = data.user;
           await persistUser(
@@ -129,8 +140,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
               _id: u._id,
               fullName: u.fullName,
               emailId: u.emailId,
-              contactNumber: u.contactNumber,
-              userImg: u.userImg,
+              contactNumber: (u as Partial<User>).contactNumber,
+              userImg: (u as Partial<User>).userImg,
             },
             data.token ?? null,
           );
@@ -152,7 +163,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       contactNumber: string;
     }): Promise<{success: boolean; error?: string}> => {
       try {
-        const res = await fetch(`${API_BASE_URL}/addUser`, {
+        const signupData = await apiRequest('/addUser', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
@@ -162,15 +173,16 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             contactNumber: payload.contactNumber || '0',
           }),
         });
-        const data = await res.json();
-        if (data.status === 'success') {
-          // Auto-login: fetch user by email (backend would need getByEmail or return user from addUser)
-          const loginRes = await fetch(`${API_BASE_URL}/login`, {
+        if (signupData.status === 'success') {
+          // Auto-login after signup
+          const loginData = await apiRequest('/login', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({emailId: payload.emailId, password: payload.password}),
+            body: JSON.stringify({
+              emailId: payload.emailId,
+              password: payload.password,
+            }),
           });
-          const loginData = await loginRes.json();
           if (loginData.status === 'success' && loginData.user) {
             const u = loginData.user;
             await persistUser(
@@ -178,16 +190,16 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
                 _id: u._id,
                 fullName: u.fullName,
                 emailId: u.emailId,
-                contactNumber: u.contactNumber,
-                userImg: u.userImg,
+                contactNumber: (u as Partial<User>).contactNumber,
+                userImg: (u as Partial<User>).userImg,
               },
               loginData.token ?? null,
             );
             return {success: true};
           }
-          return {success: true}; // account created, user can log in
+          return {success: true};
         }
-        return {success: false, error: data.message || 'Signup failed'};
+        return {success: false, error: signupData.message || 'Signup failed'};
       } catch (e: any) {
         return {success: false, error: e?.message || 'Network error'};
       }
@@ -200,18 +212,16 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   }, [persistUser]);
 
   const continueAsGuest = useCallback(() => {
-    setUser({
+    const guestUser: User = {
       _id: 'guest',
-      fullName: 'Guest',
+      fullName: 'Guest User',
       emailId: 'guest@pawmantra.com',
-      contactNumber: '',
-    });
-    AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
-      _id: 'guest',
-      fullName: 'Guest',
-      emailId: 'guest@pawmantra.com',
-      contactNumber: '',
-    })).catch(() => {});
+      contactNumber: '+91 9876543210',
+    };
+    setUser(guestUser);
+    AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(guestUser)).catch(
+      () => {},
+    );
   }, []);
 
   const value: AuthContextType = {
@@ -232,6 +242,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  if (!ctx) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
   return ctx;
 }

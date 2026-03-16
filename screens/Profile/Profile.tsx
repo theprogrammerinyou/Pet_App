@@ -1,15 +1,20 @@
-import {View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image} from 'react-native';
+import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {ButtonWrapper} from '../../components/Wrappers/Button';
 import {useAuth} from '../../context/AuthContext';
 import {theme} from '../../constants/theme';
 
 const MENU_ITEMS = [
-  { id: 'edit', label: 'Edit Profile', icon: '👤', screen: 'EditProfile' as const },
-  { id: 'pets', label: 'My Pets', icon: '🐾', screen: 'MyPets' as const },
-  { id: 'notifications', label: 'Notifications', icon: '🔔', screen: null },
-  { id: 'help', label: 'Help & Support', icon: '❓', screen: null },
-  { id: 'about', label: 'About Paw Mantra', icon: 'ℹ️', screen: null },
+  {
+    id: 'edit',
+    label: 'Edit Profile',
+    icon: '👤',
+    screen: 'EditProfile' as const,
+  },
+  {id: 'pets', label: 'My Pets', icon: '🐾', screen: 'MyPets' as const},
+  {id: 'notifications', label: 'Notifications', icon: '🔔', screen: null},
+  {id: 'help', label: 'Help & Support', icon: '❓', screen: null},
+  {id: 'about', label: 'About Paw Mantra', icon: 'ℹ️', screen: null},
 ];
 
 export function Profile({navigation}: {navigation: any}) {
@@ -41,14 +46,17 @@ export function Profile({navigation}: {navigation: any}) {
 
       <View style={styles.section}>
         <TextWrapper
-          text="Account"
+          text="Your Account"
           fontSize={theme.typography.subtitle}
           style={styles.sectionTitle}
         />
-        {MENU_ITEMS.map((item) => (
+        {MENU_ITEMS.map((item, index) => (
           <TouchableOpacity
             key={item.id}
-            style={styles.menuRow}
+            style={[
+              styles.menuRow,
+              index === MENU_ITEMS.length - 1 && styles.menuRowLast,
+            ]}
             activeOpacity={0.7}
             onPress={() => item.screen && navigation.navigate(item.screen)}>
             <TextWrapper text={item.icon} fontSize={20} />
@@ -57,14 +65,18 @@ export function Profile({navigation}: {navigation: any}) {
               style={styles.menuLabel}
               fontSize={theme.typography.body}
             />
-            <TextWrapper text="›" color={theme.colors.textMuted} fontSize={20} />
+            <TextWrapper
+              text="›"
+              color={theme.colors.textMuted}
+              fontSize={20}
+            />
           </TouchableOpacity>
         ))}
       </View>
 
       <View style={styles.logoutSection}>
         <ButtonWrapper
-          title="Sign Out"
+          title="Log Out"
           onPress={logout}
           backgroundColor={theme.colors.surface}
           color={theme.colors.error}
@@ -84,14 +96,14 @@ export function Profile({navigation}: {navigation: any}) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    marginTop: Platform.OS === 'ios' ? 56 : 24,
-    marginHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.sm,
+    marginHorizontal: 24,
     paddingBottom: 120,
     backgroundColor: theme.colors.backgroundWarm,
   },
   header: {
     alignItems: 'center',
-    marginBottom: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
   },
   avatarContainer: {
     width: 80,
@@ -110,9 +122,9 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.md,
-    marginBottom: theme.spacing.lg,
+    marginBottom: theme.spacing.md,
     borderWidth: 1,
-    borderColor: theme.colors.primaryLight,
+    borderColor: theme.colors.borderLight,
     ...theme.shadow.card,
   },
   sectionTitle: {
@@ -128,14 +140,17 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.borderLight,
     gap: 12,
   },
+  menuRowLast: {
+    borderBottomWidth: 0,
+  },
   menuLabel: {
     flex: 1,
   },
   logoutSection: {
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.sm,
   },
   footer: {
     textAlign: 'center',
-    marginTop: theme.spacing.xl,
+    marginTop: theme.spacing.lg,
   },
 });

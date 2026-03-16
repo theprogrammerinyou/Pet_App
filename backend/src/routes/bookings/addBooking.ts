@@ -4,10 +4,21 @@ import {AuthRequest} from '../../middleware/auth';
 
 export async function addBookingRoute(req: AuthRequest, res: Response) {
   const userId = req.userId;
-  const {bookingType, providerId, providerName, date, time, petId, petName, notes} = req.body;
+  const {
+    bookingType,
+    providerId,
+    providerName,
+    date,
+    time,
+    petId,
+    petName,
+    notes,
+  } = req.body;
 
   if (!userId) {
-    return res.status(401).json({ status: 'fail', code: 401, message: 'Unauthorized' });
+    return res
+      .status(401)
+      .json({status: 'fail', code: 401, message: 'Unauthorized'});
   }
   if (!bookingType || !providerName) {
     return res.status(400).json({

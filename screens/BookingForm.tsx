@@ -1,11 +1,10 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect, useCallback, useMemo} from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   Platform,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
@@ -18,9 +17,15 @@ import {useAuth} from '../context/AuthContext';
 import {apiRequest} from '../services/api';
 import {theme} from '../constants/theme';
 
-type Pet = { _id: string; name: string; category?: string };
+type Pet = {_id: string; name: string; category?: string};
 
-export function BookingForm({navigation, route}: {navigation: any; route: any}) {
+export function BookingForm({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) {
   const {user, getAuthHeaders} = useAuth();
   const params = route?.params ?? {};
   const bookingType = params.bookingType ?? 'walk';
@@ -47,14 +52,15 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
     try {
       const data = await apiRequest('/getPetsByUser', {
         method: 'POST',
-        body: JSON.stringify({}),
+        body: JSON.stringify({userId: user._id}),
         getAuthHeaders: getAuthHeaders,
       });
       if (data.status === 'success' && Array.isArray(data.pets)) {
         setPets(data.pets);
-        if (data.pets.length > 0 && !petId) {
-          setPetId(data.pets[0]._id);
-          setPetName(data.pets[0].name);
+        const firstPet = data.pets[0];
+        if (firstPet) {
+          setPetId(prev => prev || firstPet._id);
+          setPetName(prev => prev || firstPet.name);
         }
       }
     } catch {
@@ -68,10 +74,22 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
     fetchPets();
   }, [fetchPets]);
 
+  const getNext7Days = () => {
+    return Array.from({length: 7}).map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const iso = d.toISOString().split('T')[0];
+      const dayName = d.toLocaleDateString('en-US', {weekday: 'short'});
+      const dayNum = d.getDate();
+      return {iso, dayName, dayNum};
+    });
+  };
+  const dayOptions = useMemo(() => getNext7Days(), []);
+  const timeOptions = ['08:00', '09:00', '10:00', '11:00', '16:00', '17:00'];
+
   useEffect(() => {
-    const d = new Date();
-    setDate(d.toISOString().split('T')[0]);
-  }, []);
+    setDate(dayOptions[0].iso);
+  }, [dayOptions]);
 
   const handleSubmit = async () => {
     if (!user?._id || user._id === 'guest') {
@@ -107,7 +125,7 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
         Alert.alert(
           'Booking Confirmed',
           'Your booking has been saved. The provider will confirm shortly.',
-          [{ text: 'OK', onPress: () => navigation.goBack() }]
+          [{text: 'OK', onPress: () => navigation.goBack()}],
         );
       } else {
         setError(data.message ?? 'Booking failed');
@@ -135,25 +153,79 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
           style={styles.subtitle}
         />
 
-        <TextWrapper text="Date" fontSize={theme.typography.body} style={styles.label} />
-        <InputWrapper
-          placeholder="YYYY-MM-DD"
-          value={date}
-          onChangeText={setDate}
-          style={styles.input}
+        <TextWrapper
+          text="Date"
+          fontSize={theme.typography.body}
+          style={styles.label}
         />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.pickerRow}>
+          {dayOptions.map(d => (
+            <TouchableOpacity
+              key={d.iso}
+              style={[
+                styles.pickerChip,
+                date === d.iso && styles.pickerChipActive,
+              ]}
+              onPress={() => setDate(d.iso)}>
+              <TextWrapper
+                text={d.dayName}
+                fontSize={12}
+                color={
+                  date === d.iso
+                    ? theme.colors.surface
+                    : theme.colors.textSecondary
+                }
+              />
+              <TextWrapper
+                text={`${d.dayNum}`}
+                fontSize={16}
+                fontWeight="700"
+                color={
+                  date === d.iso ? theme.colors.surface : theme.colors.text
+                }
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
-        <TextWrapper text="Time" fontSize={theme.typography.body} style={styles.label} />
-        <InputWrapper
-          placeholder="e.g. 09:00"
-          value={time}
-          onChangeText={setTime}
-          style={styles.input}
+        <TextWrapper
+          text="Time"
+          fontSize={theme.typography.body}
+          style={styles.label}
         />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.pickerRow}>
+          {timeOptions.map(t => (
+            <TouchableOpacity
+              key={t}
+              style={[styles.pickerChip, time === t && styles.pickerChipActive]}
+              onPress={() => setTime(t)}>
+              <TextWrapper
+                text={t}
+                fontSize={14}
+                fontWeight="600"
+                color={time === t ? theme.colors.surface : theme.colors.text}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
-        <TextWrapper text="Pet" fontSize={theme.typography.body} style={styles.label} />
+        <TextWrapper
+          text="Pet"
+          fontSize={theme.typography.body}
+          style={styles.label}
+        />
         {loadingPets ? (
-          <ActivityIndicator size="small" color={theme.colors.primary} style={styles.petLoader} />
+          <ActivityIndicator
+            size="small"
+            color={theme.colors.primary}
+            style={styles.petLoader}
+          />
         ) : pets.length === 0 ? (
           <View style={styles.petRow}>
             <InputWrapper
@@ -165,10 +237,13 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
           </View>
         ) : (
           <View style={styles.petList}>
-            {pets.map((p) => (
+            {pets.map(p => (
               <TouchableOpacity
                 key={p._id}
-                style={[styles.petChip, petId === p._id && styles.petChipActive]}
+                style={[
+                  styles.petChip,
+                  petId === p._id && styles.petChipActive,
+                ]}
                 onPress={() => {
                   setPetId(p._id);
                   setPetName(p.name);
@@ -176,14 +251,20 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
                 <TextWrapper
                   text={p.name}
                   fontSize={theme.typography.body}
-                  color={petId === p._id ? theme.colors.surface : theme.colors.text}
+                  color={
+                    petId === p._id ? theme.colors.surface : theme.colors.text
+                  }
                 />
               </TouchableOpacity>
             ))}
           </View>
         )}
 
-        <TextWrapper text="Notes (optional)" fontSize={theme.typography.body} style={styles.label} />
+        <TextWrapper
+          text="Notes (optional)"
+          fontSize={theme.typography.body}
+          style={styles.label}
+        />
         <InputWrapper
           placeholder="Any special requests..."
           value={notes}
@@ -192,7 +273,12 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
         />
 
         {error ? (
-          <TextWrapper text={error} color={theme.colors.error} fontSize={theme.typography.caption} style={styles.err} />
+          <TextWrapper
+            text={error}
+            color={theme.colors.error}
+            fontSize={theme.typography.caption}
+            style={styles.err}
+          />
         ) : null}
 
         <ButtonWrapper
@@ -201,7 +287,12 @@ export function BookingForm({navigation, route}: {navigation: any; route: any}) 
           style={styles.btn}
           backgroundColor={theme.colors.primary}
         />
-        {submitting && <ActivityIndicator color={theme.colors.primary} style={styles.loader} />}
+        {submitting && (
+          <ActivityIndicator
+            color={theme.colors.primary}
+            style={styles.loader}
+          />
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -214,7 +305,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingHorizontal: theme.spacing.lg,
-    paddingBottom: 100,
+    paddingBottom: 180,
   },
   subtitle: {
     marginBottom: theme.spacing.lg,
@@ -225,7 +316,26 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: theme.colors.surface,
+    borderColor: theme.colors.borderLight,
+  },
+  pickerRow: {
+    gap: 12,
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  pickerChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 16,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
     borderColor: theme.colors.border,
+    alignItems: 'center',
+    minWidth: 64,
+  },
+  pickerChipActive: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
   },
   notesInput: {
     minHeight: 80,

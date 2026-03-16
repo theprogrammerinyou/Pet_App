@@ -1,11 +1,5 @@
 import {useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
+import {ScrollView, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Search} from '../../components/Search';
 import {Header} from '../../components/Header';
 import {TextWrapper} from '../../components/Wrappers/Text';
@@ -28,7 +22,8 @@ const MOCK_POSTS: Post[] = [
     author: 'Priya M.',
     authorAvatar: '🐕',
     timeAgo: '2h ago',
-    content: 'Just adopted this cutie from the shelter! Meet Bruno. Any tips for first-time dog parents?',
+    content:
+      'Just adopted this cutie from the shelter! Meet Bruno. Any tips for first-time dog parents?',
     likes: 42,
     comments: 12,
   },
@@ -37,7 +32,8 @@ const MOCK_POSTS: Post[] = [
     author: 'Rahul K.',
     authorAvatar: '🐈',
     timeAgo: '5h ago',
-    content: 'Best vet in Hyderabad for cat vaccinations? Looking for someone gentle and affordable.',
+    content:
+      'Best vet in Hyderabad for cat vaccinations? Looking for someone gentle and affordable.',
     likes: 18,
     comments: 24,
   },
@@ -46,7 +42,8 @@ const MOCK_POSTS: Post[] = [
     author: 'Anitha R.',
     authorAvatar: '🐾',
     timeAgo: '1d ago',
-    content: 'Pet-friendly cafes in the city? Want to take my golden retriever out for a weekend brunch.',
+    content:
+      'Pet-friendly cafes in the city? Want to take my golden retriever out for a weekend brunch.',
     likes: 56,
     comments: 8,
   },
@@ -55,7 +52,8 @@ const MOCK_POSTS: Post[] = [
     author: 'Sneha P.',
     authorAvatar: '🐶',
     timeAgo: '2d ago',
-    content: 'Share your favourite homemade dog treat recipes! Here’s mine: peanut butter + oats + banana.',
+    content:
+      'Share your favourite homemade dog treat recipes! Here’s mine: peanut butter + oats + banana.',
     likes: 89,
     comments: 31,
   },
@@ -66,14 +64,16 @@ export function Community({navigation}: {navigation: any}) {
 
   const filtered = searchValue.trim()
     ? MOCK_POSTS.filter(
-        (p) =>
+        p =>
           p.content.toLowerCase().includes(searchValue.toLowerCase()) ||
-          p.author.toLowerCase().includes(searchValue.toLowerCase())
+          p.author.toLowerCase().includes(searchValue.toLowerCase()),
       )
     : MOCK_POSTS;
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}>
       <Header text="Pet Community" navigation={navigation} />
       <View style={styles.searchWrap}>
         <Search
@@ -96,7 +96,7 @@ export function Community({navigation}: {navigation: any}) {
             style={styles.empty}
           />
         ) : (
-          filtered.map((post) => (
+          filtered.map(post => (
             <TouchableOpacity
               key={post.id}
               style={styles.card}
@@ -106,7 +106,10 @@ export function Community({navigation}: {navigation: any}) {
                   <TextWrapper text={post.authorAvatar} fontSize={24} />
                 </View>
                 <View style={styles.cardMeta}>
-                  <TextWrapper text={post.author} fontSize={theme.typography.body} />
+                  <TextWrapper
+                    text={post.author}
+                    fontSize={theme.typography.body}
+                  />
                   <TextWrapper
                     text={post.timeAgo}
                     color={theme.colors.textMuted}
@@ -143,7 +146,7 @@ export function Community({navigation}: {navigation: any}) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    marginTop: Platform.OS === 'ios' ? 50 : 20,
+    paddingTop: theme.spacing.sm,
     marginHorizontal: 20,
     paddingBottom: 100,
     backgroundColor: theme.colors.backgroundWarm,
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
-  cardMeta: { flex: 1 },
+  cardMeta: {flex: 1},
   content: {
     lineHeight: 22,
     marginBottom: theme.spacing.sm,

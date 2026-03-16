@@ -4,11 +4,10 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
-  TouchableOpacity,
-  Image,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
+import {Header} from '../../components/Header';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {InputWrapper} from '../../components/Wrappers/Input';
 import {ButtonWrapper} from '../../components/Wrappers/Button';
@@ -62,15 +61,20 @@ export function EditProfile({navigation}: {navigation: any}) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Image source={require('../../assets/utils/backButton.png')} />
-        </TouchableOpacity>
-        <TextWrapper text="Edit Profile" fontSize={24} style={styles.title} />
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled">
+        <Header text="Edit Profile" navigation={navigation} />
         {error ? (
           <View style={styles.errorBox}>
-            <TextWrapper text={error} color={theme.colors.error} fontSize={14} />
+            <TextWrapper
+              text={error}
+              color={theme.colors.error}
+              fontSize={14}
+            />
           </View>
         ) : null}
         <InputWrapper
@@ -89,7 +93,10 @@ export function EditProfile({navigation}: {navigation: any}) {
           onChangeText={setContactNumber}
         />
         {loading ? (
-          <ActivityIndicator color={theme.colors.primary} style={styles.loader} />
+          <ActivityIndicator
+            color={theme.colors.primary}
+            style={styles.loader}
+          />
         ) : (
           <ButtonWrapper title="Save" onPress={handleSave} />
         )}
@@ -99,22 +106,19 @@ export function EditProfile({navigation}: {navigation: any}) {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: {flex: 1},
   container: {
-    marginTop: Platform.OS === 'ios' ? 56 : 24,
+    paddingTop: theme.spacing.sm,
     marginHorizontal: theme.spacing.lg,
     paddingBottom: 40,
   },
-  backBtn: {
-    marginBottom: 16,
-    alignSelf: 'flex-start',
-  },
-  title: { marginBottom: 24 },
+  // header spacing moved into Header component
+
   errorBox: {
     marginBottom: 12,
     padding: 12,
     backgroundColor: 'rgba(198, 40, 40, 0.1)',
     borderRadius: 8,
   },
-  loader: { marginTop: 24 },
+  loader: {marginTop: 24},
 });

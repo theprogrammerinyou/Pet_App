@@ -16,9 +16,15 @@ type Props = {
   stagger?: boolean;
 };
 
-export function FadeInView({children, style, delay = 0, duration = 400}: Props) {
+export function FadeInView({
+  children,
+  style,
+  delay = 0,
+  duration = 340,
+}: Props) {
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(12);
+  const scale = useSharedValue(0.98);
 
   useEffect(() => {
     opacity.value = withDelay(
@@ -29,21 +35,27 @@ export function FadeInView({children, style, delay = 0, duration = 400}: Props) 
       delay,
       withTiming(0, {duration, easing: Easing.out(Easing.cubic)}),
     );
-  }, [delay, duration]);
+    scale.value = withDelay(
+      delay,
+      withTiming(1, {duration, easing: Easing.out(Easing.cubic)}),
+    );
+  }, [delay, duration, opacity, scale, translateY]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    transform: [{translateY: translateY.value}],
+    transform: [{translateY: translateY.value}, {scale: scale.value}],
   }));
 
-  return <Animated.View style={[style, animatedStyle]}>{children}</Animated.View>;
+  return (
+    <Animated.View style={[style, animatedStyle]}>{children}</Animated.View>
+  );
 }
 
 export function StaggerContainer({
   children,
   style,
   index = 0,
-  step = 80,
+  step = 64,
 }: Props & {index?: number; step?: number}) {
   return (
     <FadeInView delay={index * step} duration={380} style={style}>

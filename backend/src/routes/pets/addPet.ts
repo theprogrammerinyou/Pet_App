@@ -8,7 +8,9 @@ export async function addPetRoute(req: AuthRequest, res: Response) {
   const {name, category, breed, gender, petImg, dob, weight} = req.body;
 
   if (!userId) {
-    return res.status(401).json({ status: 'fail', code: 401, message: 'Unauthorized' });
+    return res
+      .status(401)
+      .json({status: 'fail', code: 401, message: 'Unauthorized'});
   }
 
   const parsed = addPet.safeParse({

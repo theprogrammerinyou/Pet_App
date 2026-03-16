@@ -1,4 +1,12 @@
-import {Image, StyleSheet, TouchableOpacity, View, ActivityIndicator, KeyboardAvoidingView, Platform} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {InputWrapper} from '../../components/Wrappers/Input';
 import {useState} from 'react';
@@ -49,22 +57,33 @@ export function Login({navigation}: {navigation: any}) {
         </TouchableOpacity>
         <View>
           <TextWrapper style={styles.headingStyle} text="Welcome!" />
-          <TextWrapper text="Sign in to continue" color={theme.colors.textSecondary} />
+          <TextWrapper
+            text="Sign in to continue"
+            color={theme.colors.textSecondary}
+          />
         </View>
         {error ? (
           <View style={styles.errorBox}>
-            <TextWrapper text={error} color={theme.colors.error} fontSize={14} />
+            <TextWrapper
+              text={error}
+              color={theme.colors.error}
+              fontSize={14}
+            />
           </View>
         ) : null}
         <View style={styles.inputContainerStyle}>
           <InputWrapper
             placeholder="E-mail"
-            onChangeText={text => onUserDataChange({value: text, type: 'email'})}
+            onChangeText={text =>
+              onUserDataChange({value: text, type: 'email'})
+            }
             value={userData.email}
           />
           <InputWrapper
             placeholder="Password"
-            onChangeText={text => onUserDataChange({value: text, type: 'password'})}
+            onChangeText={text =>
+              onUserDataChange({value: text, type: 'password'})
+            }
             type="password"
             value={userData.password}
           />
@@ -72,7 +91,11 @@ export function Login({navigation}: {navigation: any}) {
             <TextWrapper text="Forgot Password?" color={theme.colors.primary} />
           </TouchableOpacity>
           {loading ? (
-            <ActivityIndicator size="small" color={theme.colors.primary} style={styles.loader} />
+            <ActivityIndicator
+              size="small"
+              color={theme.colors.primary}
+              style={styles.loader}
+            />
           ) : (
             <ButtonWrapper onPress={handleSignIn} title="Sign in" />
           )}
@@ -92,7 +115,7 @@ export function Login({navigation}: {navigation: any}) {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: {flex: 1},
   container: {
     margin: 30,
   },
@@ -103,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(198, 40, 40, 0.1)',
     borderRadius: 8,
   },
-  loader: { marginTop: 24 },
+  loader: {marginTop: 24},
   backButtonStyle: {
     borderRadius: 50,
     borderColor: '#CB93A5',

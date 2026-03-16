@@ -1,4 +1,13 @@
-import {Image, StyleSheet, TouchableOpacity, View, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {InputWrapper} from '../../components/Wrappers/Input';
 import {useState} from 'react';
@@ -61,52 +70,76 @@ export function Signup({navigation}: {navigation: any}) {
     <KeyboardAvoidingView
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
-          <TouchableOpacity onPress={() => navigation.navigate('loginOrSignup')}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('loginOrSignup')}>
             <View style={styles.backButtonStyle}>
               <Image source={require('../../assets/utils/backButton.png')} />
             </View>
           </TouchableOpacity>
           <View>
             <TextWrapper style={styles.headingStyle} text="Hi!" />
-            <TextWrapper text="Create an account" color={theme.colors.textSecondary} />
+            <TextWrapper
+              text="Create an account"
+              color={theme.colors.textSecondary}
+            />
           </View>
           {error ? (
             <View style={styles.errorBox}>
-              <TextWrapper text={error} color={theme.colors.error} fontSize={14} />
+              <TextWrapper
+                text={error}
+                color={theme.colors.error}
+                fontSize={14}
+              />
             </View>
           ) : null}
           <View style={styles.inputContainerStyle}>
             <InputWrapper
               placeholder="Full Name"
-              onChangeText={text => onUserDataChange({value: text, type: 'fullName'})}
+              onChangeText={text =>
+                onUserDataChange({value: text, type: 'fullName'})
+              }
               value={userDetails.fullName}
             />
             <InputWrapper
               placeholder="E-mail"
-              onChangeText={text => onUserDataChange({value: text, type: 'email'})}
+              onChangeText={text =>
+                onUserDataChange({value: text, type: 'email'})
+              }
               value={userDetails.email}
             />
             <InputWrapper
               placeholder="Phone Number"
-              onChangeText={text => onUserDataChange({value: text, type: 'phoneNumber'})}
+              onChangeText={text =>
+                onUserDataChange({value: text, type: 'phoneNumber'})
+              }
               value={userDetails.phoneNumber}
             />
             <InputWrapper
               placeholder="Password (min 6 characters)"
-              onChangeText={text => onUserDataChange({value: text, type: 'password'})}
+              onChangeText={text =>
+                onUserDataChange({value: text, type: 'password'})
+              }
               type="password"
               value={userDetails.password}
             />
             <InputWrapper
               placeholder="Confirm Password"
-              onChangeText={text => onUserDataChange({value: text, type: 'confirmPassword'})}
+              onChangeText={text =>
+                onUserDataChange({value: text, type: 'confirmPassword'})
+              }
               type="password"
               value={userDetails.confirmPassword}
             />
             {loading ? (
-              <ActivityIndicator size="small" color={theme.colors.primary} style={styles.loader} />
+              <ActivityIndicator
+                size="small"
+                color={theme.colors.primary}
+                style={styles.loader}
+              />
             ) : (
               <ButtonWrapper onPress={handleSignUp} title="Sign up" />
             )}
@@ -127,8 +160,8 @@ export function Signup({navigation}: {navigation: any}) {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  scrollContent: { flexGrow: 1 },
+  flex: {flex: 1},
+  scrollContent: {flexGrow: 1},
   container: {
     margin: 30,
   },
@@ -139,7 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(198, 40, 40, 0.1)',
     borderRadius: 8,
   },
-  loader: { marginTop: 24 },
+  loader: {marginTop: 24},
   backButtonStyle: {
     borderRadius: 50,
     borderColor: '#CB93A5',

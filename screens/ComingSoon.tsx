@@ -1,4 +1,5 @@
-import {View, StyleSheet, Platform} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import {Header} from '../components/Header';
 import {TextWrapper} from '../components/Wrappers/Text';
 import {theme} from '../constants/theme';
 
@@ -6,7 +7,7 @@ export function ComingSoon({route}: {route?: {params?: {title?: string}}}) {
   const title = route?.params?.title ?? 'Coming Soon';
   return (
     <View style={styles.container}>
-      <TextWrapper text={title} fontSize={theme.typography.title} style={styles.title} />
+      <Header text={title} />
       <TextWrapper
         text="We're working on this feature. Stay tuned!"
         color={theme.colors.textSecondary}
@@ -21,12 +22,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: Platform.OS === 'ios' ? 50 : 20,
+    paddingTop: theme.spacing.sm,
     padding: theme.spacing.lg,
   },
-  title: {
-    marginBottom: theme.spacing.sm,
-  },
+  // title style removed, Header provides title spacing
   subtitle: {
     textAlign: 'center',
   },

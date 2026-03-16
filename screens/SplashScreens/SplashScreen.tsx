@@ -13,7 +13,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  withSequence,
   withDelay,
   Easing,
 } from 'react-native-reanimated';
@@ -32,12 +31,21 @@ export default function SplashScreen({navigation}: {navigation: any}) {
   const skipOpacity = useSharedValue(0);
 
   useEffect(() => {
-    pawOpacity.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.cubic)});
-    pawScale.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.back(1.2))});
+    pawOpacity.value = withTiming(1, {
+      duration: 500,
+      easing: Easing.out(Easing.cubic),
+    });
+    pawScale.value = withTiming(1, {
+      duration: 500,
+      easing: Easing.out(Easing.back(1.2)),
+    });
     contentOpacity.value = withDelay(300, withTiming(1, {duration: 600}));
-    contentTranslateY.value = withDelay(300, withTiming(0, {duration: 500, easing: Easing.out(Easing.cubic)}));
+    contentTranslateY.value = withDelay(
+      300,
+      withTiming(0, {duration: 500, easing: Easing.out(Easing.cubic)}),
+    );
     skipOpacity.value = withDelay(200, withTiming(1, {duration: 400}));
-  }, []);
+  }, [contentOpacity, contentTranslateY, pawOpacity, pawScale, skipOpacity]);
 
   const pawAnimatedStyle = useAnimatedStyle(() => ({
     opacity: pawOpacity.value,
@@ -54,12 +62,21 @@ export default function SplashScreen({navigation}: {navigation: any}) {
   }));
 
   return (
-    <SafeAreaView style={[styles.safe, {backgroundColor: theme.colors.primary}]}>
-      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.primary} />
-      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+    <SafeAreaView
+      style={[styles.safe, {backgroundColor: theme.colors.primary}]}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={theme.colors.primary}
+      />
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Animated.View style={pawAnimatedStyle}>
-            <Image source={require('../../assets/Splash/paw.png')} style={styles.pawImg} />
+            <Image
+              source={require('../../assets/Splash/paw.png')}
+              style={styles.pawImg}
+            />
           </Animated.View>
           <AnimatedTouchable
             style={[styles.skipBtn, skipAnimatedStyle]}
@@ -73,10 +90,7 @@ export default function SplashScreen({navigation}: {navigation: any}) {
             style={styles.dogImage}
             source={require('../../assets/Splash/brownDog.png')}
           />
-          <TextWrapper
-            style={styles.heading}
-            text="Welcome to Paw Mantra"
-          />
+          <TextWrapper style={styles.heading} text="Welcome to Paw Mantra" />
           <TextWrapper
             style={styles.subtext}
             text="Your pet's well-being is our top priority. From grooming to boarding, we offer comprehensive care for your furry friends."
@@ -95,25 +109,30 @@ export default function SplashScreen({navigation}: {navigation: any}) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1 },
-  container: { flex: 1 },
-  scrollContent: { minHeight: height, paddingBottom: 40 },
+  safe: {flex: 1},
+  container: {flex: 1},
+  scrollContent: {minHeight: height, paddingBottom: 40},
   header: {
     flexDirection: 'row',
     margin: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  pawImg: { width: 48, height: 48 },
-  skipBtn: { padding: 8 },
-  skipText: { fontSize: 18, fontWeight: '600' },
+  pawImg: {width: 48, height: 48},
+  skipBtn: {padding: 8},
+  skipText: {fontSize: 18, fontWeight: '600'},
   content: {
     alignItems: 'center',
     marginTop: 40,
     paddingHorizontal: 24,
   },
-  dogImage: { width: 280, height: 280, marginBottom: 16 },
-  heading: { fontSize: 22, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
+  dogImage: {width: 280, height: 280, marginBottom: 16},
+  heading: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
   subtext: {
     fontSize: 15,
     textAlign: 'center',

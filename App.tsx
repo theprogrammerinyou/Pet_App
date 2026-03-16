@@ -5,7 +5,13 @@
  */
 
 import React from 'react';
-import {Image, Platform, View, ActivityIndicator, StyleSheet} from 'react-native';
+import {
+  Image,
+  Platform,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
@@ -71,7 +77,9 @@ function ProfileStack() {
 
 function AuthStack() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="splashScreen">
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName="splashScreen">
       <Stack.Screen name="splashScreen" component={SplashScreen} />
       <Stack.Screen name="loginOrSignup" component={Main} />
       <Stack.Screen name="login" component={Login} />
@@ -91,9 +99,11 @@ function MainTabs() {
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: theme.colors.tabBar,
-          height: Platform.OS === 'ios' ? 82 : 64,
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
+          height: Platform.OS === 'ios' ? 96 : 76,
+          paddingBottom: Platform.OS === 'ios' ? 24 : 12,
+          paddingTop: 12,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
           position: 'absolute',
           bottom: 0,
           left: 0,
@@ -121,7 +131,7 @@ function MainTabs() {
                   ? require('./assets/TabBar/focussedHome.png')
                   : require('./assets/TabBar/home.png')
               }
-              style={{ width: 24, height: 24 }}
+              style={styles.tabIcon}
               resizeMode="contain"
             />
           ),
@@ -138,7 +148,7 @@ function MainTabs() {
                   ? require('./assets/TabBar/focussedCommunity.png')
                   : require('./assets/TabBar/community.png')
               }
-              style={{ width: 24, height: 24 }}
+              style={styles.tabIcon}
               resizeMode="contain"
             />
           ),
@@ -155,7 +165,7 @@ function MainTabs() {
                   ? require('./assets/TabBar/focussedLocation.png')
                   : require('./assets/TabBar/location.png')
               }
-              style={{ width: 24, height: 24 }}
+              style={styles.tabIcon}
               resizeMode="contain"
             />
           ),
@@ -172,7 +182,7 @@ function MainTabs() {
                   ? require('./assets/TabBar/focussedDoctor.png')
                   : require('./assets/TabBar/doctor.png')
               }
-              style={{ width: 24, height: 24 }}
+              style={styles.tabIcon}
               resizeMode="contain"
             />
           ),
@@ -189,7 +199,7 @@ function MainTabs() {
                   ? require('./assets/TabBar/focussedProfile.png')
                   : require('./assets/TabBar/profile.png')
               }
-              style={{ width: 24, height: 24 }}
+              style={styles.tabIcon}
               resizeMode="contain"
             />
           ),
@@ -228,12 +238,16 @@ function App(): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: {flex: 1},
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
+  },
+  tabIcon: {
+    width: 28,
+    height: 28,
   },
 });
 

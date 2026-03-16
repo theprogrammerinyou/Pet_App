@@ -1,9 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {Header} from '../Header';
 import {TextWrapper} from '../Wrappers/Text';
 import {Rating} from '../Rating';
@@ -23,8 +18,11 @@ export function BoardingProfile({
   navigation,
   route,
 }: {
-  navigation?: { goBack: () => void; navigate: (screen: string, p?: object) => void };
-  route?: { params?: { boarding?: BoardingParam & { _id?: string } } };
+  navigation?: {
+    goBack: () => void;
+    navigate: (screen: string, p?: object) => void;
+  };
+  route?: {params?: {boarding?: BoardingParam & {_id?: string}}};
 }) {
   const b = route?.params?.boarding;
   const name = b?.name ?? 'Happy Tails Boarding';
@@ -46,24 +44,56 @@ export function BoardingProfile({
           <View style={styles.headerInfo}>
             <TextWrapper text={name} fontSize={theme.typography.subtitle} />
             <Rating ratingText={String(rating)} />
-            <TextWrapper text={`${reviews} reviews`} color={theme.colors.textMuted} fontSize={theme.typography.caption} />
+            <TextWrapper
+              text={`${reviews} reviews`}
+              color={theme.colors.textMuted}
+              fontSize={theme.typography.caption}
+            />
           </View>
         </View>
       </View>
       <View style={styles.section}>
-        <TextWrapper text="Location" fontSize={theme.typography.body} style={styles.label} />
-        <TextWrapper text={location} color={theme.colors.textSecondary} fontSize={theme.typography.body} />
+        <TextWrapper
+          text="Location"
+          fontSize={theme.typography.body}
+          style={styles.label}
+        />
+        <TextWrapper
+          text={location}
+          color={theme.colors.textSecondary}
+          fontSize={theme.typography.body}
+        />
       </View>
       <View style={styles.section}>
-        <TextWrapper text="Amenities" fontSize={theme.typography.body} style={styles.label} />
-        <TextWrapper text={amenities} color={theme.colors.textSecondary} fontSize={theme.typography.body} />
+        <TextWrapper
+          text="Amenities"
+          fontSize={theme.typography.body}
+          style={styles.label}
+        />
+        <TextWrapper
+          text={amenities}
+          color={theme.colors.textSecondary}
+          fontSize={theme.typography.body}
+        />
       </View>
       <View style={styles.section}>
-        <TextWrapper text="Price" fontSize={theme.typography.body} style={styles.label} />
-        <TextWrapper text={`₹${pricePerDay} per day`} color={theme.colors.primary} fontSize={theme.typography.subtitle} />
+        <TextWrapper
+          text="Price"
+          fontSize={theme.typography.body}
+          style={styles.label}
+        />
+        <TextWrapper
+          text={`₹${pricePerDay} per day`}
+          color={theme.colors.primary}
+          fontSize={theme.typography.subtitle}
+        />
       </View>
       <View style={styles.section}>
-        <TextWrapper text="About" fontSize={theme.typography.body} style={styles.label} />
+        <TextWrapper
+          text="About"
+          fontSize={theme.typography.body}
+          style={styles.label}
+        />
         <TextWrapper
           color={theme.colors.textSecondary}
           fontSize={theme.typography.body}
@@ -72,15 +102,15 @@ export function BoardingProfile({
       </View>
       <View style={styles.buttonWrap}>
         <ButtonWrapper
-        title="Book Stay"
-        onPress={() => {
-          navigation?.navigate?.('BookingForm', {
-            bookingType: 'boarding',
-            providerId,
-            providerName: name,
-          });
-        }}
-      />
+          title="Book Stay"
+          onPress={() => {
+            navigation?.navigate?.('BookingForm', {
+              bookingType: 'boarding',
+              providerId,
+              providerName: name,
+            });
+          }}
+        />
       </View>
     </ScrollView>
   );
@@ -88,7 +118,7 @@ export function BoardingProfile({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: Platform.OS === 'ios' ? 50 : 20,
+    paddingTop: theme.spacing.sm,
     marginHorizontal: 20,
     paddingBottom: 100,
   },
@@ -111,7 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16,
   },
-  headerInfo: { flex: 1 },
+  headerInfo: {flex: 1},
   buttonWrap: {
     marginTop: theme.spacing.xl,
   },

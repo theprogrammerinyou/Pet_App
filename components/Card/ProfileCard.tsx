@@ -7,76 +7,113 @@ export function WalkerCard({
   walkerExp,
   walkerRate,
   walkerDistance,
+  imageUrl,
   onPress,
 }: {
   walkerName: string;
   walkerExp: string;
   walkerRate: string;
   walkerDistance: string;
+  imageUrl?: string;
   onPress: () => void;
 }) {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.85}>
-      <View style={styles.avatarWrap}>
-        <Image
-          source={require('../../assets/walker/girlHeart.png')}
-          style={styles.avatarImg}
-          resizeMode="contain"
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.card}
+      activeOpacity={0.85}>
+      <View style={styles.cardTop}>
+        <View style={styles.avatarWrap}>
+          <Image
+            source={
+              imageUrl
+                ? {uri: imageUrl}
+                : require('../../assets/walker/girlHeart.png')
+            }
+            style={styles.avatarImg}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={styles.cardInfo}>
+          <TextWrapper
+            text={walkerName}
+            fontSize={theme.typography.subtitle}
+            fontWeight="700"
+          />
+          <View style={styles.meta}>
+            <TextWrapper
+              text={walkerExp}
+              fontSize={12}
+              color={theme.colors.gold}
+              fontWeight="bold"
+            />
+            <TextWrapper
+              text={walkerDistance}
+              fontSize={12}
+              color={theme.colors.textMuted}
+            />
+          </View>
+        </View>
+      </View>
+      <View style={styles.cardBottom}>
+        <TextWrapper
+          text={walkerRate}
+          fontSize={theme.typography.title}
+          fontWeight="800"
+          color={theme.colors.primary}
+        />
+        <TextWrapper
+          text="/ hour"
+          color={theme.colors.textMuted}
+          fontSize={12}
         />
       </View>
-      <View style={styles.ratingRow}>
-        <Image
-          source={require('../../assets/walker/rating.png')}
-          style={styles.starIcon}
-          resizeMode="contain"
-        />
-        <TextWrapper text={walkerExp} fontSize={theme.typography.caption} color={theme.colors.text} />
-      </View>
-      <TextWrapper text={walkerName} fontSize={theme.typography.body} style={styles.name} color={theme.colors.text} />
-      <TextWrapper text={`${walkerRate}/hr`} fontSize={theme.typography.caption} color={theme.colors.primary} />
-      <TextWrapper text={walkerDistance} fontSize={theme.typography.small} color={theme.colors.textMuted} />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    width: 140,
+    width: '100%',
     backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.sm,
-    marginBottom: theme.spacing.md,
-    marginRight: theme.spacing.sm,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    marginBottom: theme.spacing.lg,
+    ...theme.shadow.glass,
     borderWidth: 1,
-    borderColor: theme.colors.primaryLight,
-    ...theme.shadow.card,
+    borderColor: 'rgba(255,255,255,0.8)',
+  },
+  cardTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.borderLight,
   },
   avatarWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: theme.colors.backgroundWarm,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: theme.colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center',
-    marginBottom: theme.spacing.sm,
+    marginRight: 16,
   },
   avatarImg: {
     width: 44,
     height: 44,
   },
-  ratingRow: {
+  cardInfo: {flex: 1},
+  meta: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  cardBottom: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
     gap: 4,
-    marginBottom: 2,
-  },
-  starIcon: {
-    width: 14,
-    height: 14,
-  },
-  name: {
-    marginBottom: 2,
-    fontWeight: '600',
   },
 });

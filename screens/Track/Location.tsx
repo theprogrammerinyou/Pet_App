@@ -1,11 +1,5 @@
 import {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Platform,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import {TextWrapper} from '../../components/Wrappers/Text';
 import {ButtonWrapper} from '../../components/Wrappers/Button';
 import {theme} from '../../constants/theme';
@@ -20,16 +14,32 @@ type Session = {
 };
 
 const MOCK_SESSIONS: Session[] = [
-  { id: '1', type: 'walk', petName: 'Bruno', providerName: 'Nikita D.', status: 'completed', time: 'Today, 9:00 AM' },
-  { id: '2', type: 'boarding', petName: 'Max', providerName: 'Happy Tails', status: 'completed', time: 'Yesterday' },
+  {
+    id: '1',
+    type: 'walk',
+    petName: 'Bruno',
+    providerName: 'Nikita D.',
+    status: 'completed',
+    time: 'Today, 9:00 AM',
+  },
+  {
+    id: '2',
+    type: 'boarding',
+    petName: 'Max',
+    providerName: 'Happy Tails',
+    status: 'completed',
+    time: 'Yesterday',
+  },
 ];
 
 export function Location({navigation}: {navigation: any}) {
   const [sessions] = useState<Session[]>(MOCK_SESSIONS);
-  const activeSession = sessions.find((s) => s.status === 'active');
+  const activeSession = sessions.find(s => s.status === 'active');
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <TextWrapper
           text="Track Your Pet"
@@ -52,12 +62,12 @@ export function Location({navigation}: {navigation: any}) {
               text="Live map view"
               color={theme.colors.textMuted}
               fontSize={theme.typography.caption}
-              style={{ marginTop: 8 }}
+              style={styles.mapCaption}
             />
             <TextWrapper
               text={`${activeSession.petName} with ${activeSession.providerName}`}
               fontSize={theme.typography.caption}
-              style={{ marginTop: 4 }}
+              style={styles.mapSubcaption}
             />
           </View>
         </View>
@@ -76,11 +86,13 @@ export function Location({navigation}: {navigation: any}) {
             text="Book a walk or boarding to see live tracking here."
             color={theme.colors.textMuted}
             fontSize={theme.typography.caption}
-            style={{ textAlign: 'center', marginBottom: theme.spacing.lg }}
+            style={styles.noActiveDescription}
           />
           <ButtonWrapper
             title="Book a Walker"
-            onPress={() => navigation.getParent()?.navigate('home', { screen: 'petWalker' })}
+            onPress={() =>
+              navigation.getParent()?.navigate('home', {screen: 'petWalker'})
+            }
             style={styles.button}
           />
         </View>
@@ -92,14 +104,23 @@ export function Location({navigation}: {navigation: any}) {
           fontSize={theme.typography.subtitle}
           style={styles.sectionTitle}
         />
-        {sessions.map((s) => (
-          <TouchableOpacity key={s.id} style={styles.sessionCard} activeOpacity={0.8}>
+        {sessions.map(s => (
+          <TouchableOpacity
+            key={s.id}
+            style={styles.sessionCard}
+            activeOpacity={0.8}>
             <View style={styles.sessionLeft}>
               <View style={styles.sessionIcon}>
-                <TextWrapper text={s.type === 'walk' ? '🚶' : '🏠'} fontSize={20} />
+                <TextWrapper
+                  text={s.type === 'walk' ? '🚶' : '🏠'}
+                  fontSize={20}
+                />
               </View>
               <View>
-                <TextWrapper text={`${s.petName} · ${s.providerName}`} fontSize={theme.typography.body} />
+                <TextWrapper
+                  text={`${s.petName} · ${s.providerName}`}
+                  fontSize={theme.typography.body}
+                />
                 <TextWrapper
                   text={s.time ?? '—'}
                   color={theme.colors.textMuted}
@@ -107,11 +128,19 @@ export function Location({navigation}: {navigation: any}) {
                 />
               </View>
             </View>
-            <View style={[styles.badge, s.status === 'active' && styles.badgeActive]}>
+            <View
+              style={[
+                styles.badge,
+                s.status === 'active' && styles.badgeActive,
+              ]}>
               <TextWrapper
                 text={s.status === 'active' ? 'Live' : 'Done'}
                 fontSize={theme.typography.small}
-                color={s.status === 'active' ? theme.colors.surface : theme.colors.textMuted}
+                color={
+                  s.status === 'active'
+                    ? theme.colors.surface
+                    : theme.colors.textMuted
+                }
               />
             </View>
           </TouchableOpacity>
@@ -124,7 +153,7 @@ export function Location({navigation}: {navigation: any}) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    marginTop: Platform.OS === 'ios' ? 56 : 24,
+    paddingTop: theme.spacing.sm,
     paddingHorizontal: theme.spacing.lg,
     paddingBottom: 100,
     backgroundColor: theme.colors.backgroundWarm,
@@ -154,7 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 4,
@@ -174,6 +203,16 @@ const styles = StyleSheet.create({
   },
   mapInner: {
     alignItems: 'center',
+  },
+  mapCaption: {
+    marginTop: 8,
+  },
+  mapSubcaption: {
+    marginTop: 4,
+  },
+  noActiveDescription: {
+    textAlign: 'center',
+    marginBottom: theme.spacing.lg,
   },
   section: {
     marginTop: theme.spacing.md,

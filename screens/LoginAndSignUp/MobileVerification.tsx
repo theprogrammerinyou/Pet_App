@@ -5,7 +5,7 @@ import {useState} from 'react';
 import {ButtonWrapper} from '../../components/Wrappers/Button';
 
 export function MobileVerification({navigation}: {navigation: any}) {
-  const [otp, setOTP] = useState({
+  const [otp, setOTP] = useState<Record<number, string>>({
     0: '',
     1: '',
     2: '',
